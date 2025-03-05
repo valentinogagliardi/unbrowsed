@@ -57,7 +57,7 @@ python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 
 # Install development dependencies
-pip install -e ".[dev,test]"
+pip install -e ".[test]"
 ```
 
 ### Running Tests
@@ -65,6 +65,20 @@ pip install -e ".[dev,test]"
 ```bash
 pytest
 ```
+
+### Releasing a New Version
+
+To release a new version:
+
+1. Update the version in `pyproject.toml`
+2. Create and push a new tag:
+
+```bash
+git tag v0.1.0  # Use appropriate version
+git push origin v0.1.0
+```
+
+This will trigger the CI pipeline to build and publish the package to PyPI automatically.
 
 ## License
 
