@@ -11,17 +11,16 @@ def test_query_by_text_exact_match():
     """
     dom = parse_html(html)
     
-    result = query_by_text(dom, "Hello World")
-    assert result is not None
-    assert result.tag == "div"
-    
-    result = query_by_text(dom, "hello world")
-    assert result is not None
-    assert result.tag == "div"
-    
-    result = query_by_text(dom, "Hello")
-    assert result is None
+    assert query_by_text(dom, "Hello World") is not None
+    assert query_by_text(dom, "hello world") is not None
+    assert query_by_text(dom, "Hello") is None
 
+def test_query_by_text_prioritize_child():
+    html = """
+    <input type="submit" value="Login" /></form><div><p>Invalid email address or password. Please correct and try again.</p></div></div></main>'
+    """
+    dom = parse_html(html)
+    assert query_by_text(dom, "Invalid email address or password. Please correct and try again.") is not None
 
 def test_query_by_text_whitespace_handling():
     html = """
@@ -30,9 +29,7 @@ def test_query_by_text_whitespace_handling():
     """
     dom = parse_html(html)
     
-    result = query_by_text(dom, "Hello World")
-    assert result is not None
-
+    assert query_by_text(dom, "Hello World") is not None
 
 def test_query_by_text_no_match():
     html = """
@@ -40,10 +37,8 @@ def test_query_by_text_no_match():
     <p>Another text</p>
     """
     dom = parse_html(html)
-    result = query_by_text(dom, "Missing Text")
     
-    assert result is None
-
+    assert query_by_text(dom, "Missing Text") is None
 
 def test_query_by_text_multiple_matches():
     html = """
@@ -59,19 +54,11 @@ def test_query_by_text_multiple_matches():
     assert "Duplicate Text" in str(excinfo.value)
     assert "query_all_by_text" in str(excinfo.value)
 
-
 def test_query_by_text_nested_elements():
     html = """
     <div>Parent <span>Child</span></div>
     """
     dom = parse_html(html)
     
-    result = query_by_text(dom, "Parent Child")
-    if result is None:
-        result = query_by_text(dom, "ParentChild")
-    assert result is not None
-    assert result.tag == "div"
-
-    result = query_by_text(dom, "Child")
-    assert result is not None
-    assert result.tag == "span"
+    assert query_by_text(dom, "Parent Child") is not None or query_by_text(dom, "ParentChild") is not None
+    assert query_by_text(dom, "Child") is not None

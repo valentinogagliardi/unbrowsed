@@ -27,7 +27,7 @@ def query_by_label_text(dom: LexborHTMLParser, text: str) -> Optional[Node]:
                     matches.append(target)
 
     if len(matches) > 1:
-        raise MultipleElementsFoundError(text, len(matches), "label text")
+        raise MultipleElementsFoundError(text, len(matches))
 
     return matches[0] if matches else None
 
@@ -50,6 +50,20 @@ def query_by_text(dom: LexborHTMLParser, text: str) -> Optional[Node]:
             matches = filtered_matches
 
         if len(matches) > 1:
+            for i, parent in enumerate(matches):
+                for j, child in enumerate(matches):
+                    if i != j and is_parent_of(parent, child):
+                        return child
+
             raise MultipleElementsFoundError(text, len(matches), "text")
 
     return matches[0] if matches else None
+
+
+def is_parent_of(parent: Node, child: Node) -> bool:
+    current = child.parent
+    while current:
+        if current == parent:
+            return True
+        current = current.parent
+    return False
