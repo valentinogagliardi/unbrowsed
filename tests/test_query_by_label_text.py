@@ -15,14 +15,9 @@ def test_query_by_label_text_exact_match():
     """
     dom = parse_html(html)
     
-    result = query_by_label_text(dom, "Email")
-    assert result is not None
-    
-    result = query_by_label_text(dom, "email")
-    assert result is not None
-    
-    result = query_by_label_text(dom, "Em")
-    assert result is None
+    assert query_by_label_text(dom, "Email") is not None
+    assert query_by_label_text(dom, "email") is None
+    assert query_by_label_text(dom, "Em") is None
 
 
 def test_query_by_label_text_no_match():
@@ -31,9 +26,8 @@ def test_query_by_label_text_no_match():
     <input id="email" type="email">
     """
     dom = parse_html(html)
-    result = query_by_label_text(dom, "Phone")
-    
-    assert result is None
+    query_by_label_text(dom, "Phone")
+    assert query_by_label_text(dom, "Phone") is None
 
 
 def test_query_by_label_text_multiple_matches():
