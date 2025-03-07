@@ -5,11 +5,12 @@ from selectolax.lexbor import LexborHTMLParser
 
 
 class MultipleElementsFoundError(AssertionError):
-    def __init__(self, text, count, query_type="label text"):
-        query_all_method = f"query_all_by_{query_type.replace(' ', '_')}"
+    def __init__(self, text, count, query_type="label text", is_get_method=False):
+        method_prefix = "get_all_by" if is_get_method else "query_all_by"
+        suggested_method = f"{method_prefix}_{query_type.replace(' ', '_')}"
         super().__init__(
             f"Found {count} elements with {query_type} '{text}'. "
-            f"Use {query_all_method} if multiple matches are expected."
+            f"Use {suggested_method} if multiple matches are expected."
         )
 
 
@@ -26,14 +27,6 @@ class QueryResult:
     def __init__(self, element: Optional[Node], context: str = ""):
         self.element = element
         self.context = context
-
-    def __bool__(self) -> bool:
-        return self.element is not None
-
-    def __eq__(self, other) -> bool:
-        if other is None:
-            return self.element is None
-        return super().__eq__(other)
 
     def to_have_attribute(self, name: str, value: Any = None) -> bool:
         """
@@ -70,7 +63,7 @@ def query_by_label_text(dom: LexborHTMLParser, text: str) -> Optional[QueryResul
                     matches.append(control)
 
     if len(matches) > 1:
-        raise MultipleElementsFoundError(text, len(matches))
+        raise MultipleElementsFoundError(text, len(matches), "label text")
 
     if not matches:
         return None
@@ -81,22 +74,26 @@ def get_by_label_text(dom: LexborHTMLParser, text: str) -> QueryResult:
     """
     Retrieves an element from the DOM by its label text.
     """
-    result = query_by_label_text(dom, text)
-    if not result:
-        raise NoElementsFoundError(text)
-    return result
+    try:
+        result = query_by_label_text(dom, text)
+        if not result:
+            raise NoElementsFoundError(text)
+        return result
+    except MultipleElementsFoundError as e:
+        raise MultipleElementsFoundError(
+            text, e.args[0].split()[1], "label text", is_get_method=True
+        )
 
 
 def query_by_text(dom: LexborHTMLParser, text: str) -> Optional[QueryResult]:
     """
     Queries the DOM for an element with the exact specified text.
     """
-    search_text = " ".join(text.strip().lower().split())
+    search_text = text.strip()
     matches = []
 
     for element in dom.css("*"):
-        element_text = element.text(deep=True, strip=True).lower()
-        element_text = " ".join(element_text.split())
+        element_text = element.text(deep=True, strip=True)
 
         if element_text == search_text:
             matches.append(element)
@@ -118,6 +115,21 @@ def query_by_text(dom: LexborHTMLParser, text: str) -> Optional[QueryResult]:
     if not matches:
         return None
     return QueryResult(matches[0], f"with text '{text}'")
+
+
+def get_by_text(dom: LexborHTMLParser, text: str) -> QueryResult:
+    """
+    Retrieves an element from the DOM by its text content.
+    """
+    try:
+        result = query_by_text(dom, text)
+        if not result:
+            raise NoElementsFoundError(text, "text")
+        return result
+    except MultipleElementsFoundError as e:
+        raise MultipleElementsFoundError(
+            text, e.args[0].split()[1], "text", is_get_method=True
+        )
 
 
 def is_parent_of(parent: Node, child: Node) -> bool:

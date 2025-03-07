@@ -1,8 +1,6 @@
-"""Tests for the to_have_attribute assertion method."""
-
 import pytest
 
-from unbrowsed import parse_html, get_by_label_text, query_by_label_text, query_by_text, NoElementsFoundError
+from unbrowsed import parse_html, get_by_label_text, query_by_text
 
 
 def test_to_have_attribute_existence():
