@@ -35,24 +35,18 @@ class QueryResult:
             return self.element is None
         return super().__eq__(other)
 
-    def to_have_attribute(self, name: str, value: Any = None) -> None:
+    def to_have_attribute(self, name: str, value: Any = None) -> bool:
+        """
+        Check if the element has the specified attribute (and optionally matches value).
+        """
         if not self.element:
-            raise AssertionError(f"Element not found: {self.context}")
-
-        if name not in self.element.attributes:
-            raise AssertionError(
-                f"Element {self.context}\n"
-                f"Expected to have attribute: {name}\n"
-                f"Actual attributes: {list(self.element.attributes.keys())}"
-            )
-
-        if value is not None and self.element.attributes.get(name) != value:
-            raise AssertionError(
-                f"Element {self.context}\n"
-                f"Attribute {name} value mismatch\n"
-                f"Expected: {value}\n"
-                f"Actual: {self.element.attributes.get(name)}"
-            )
+            return False
+        actual_value = self.element.attributes.get(name)
+        if actual_value is None:
+            return False
+        if value is not None and actual_value != value:
+            return False
+        return True
 
 
 def query_by_label_text(dom: LexborHTMLParser, text: str) -> Optional[QueryResult]:
