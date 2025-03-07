@@ -41,12 +41,15 @@ class QueryResult:
         """
         if not self.element:
             return False
+
+        if name not in self.element.attributes:
+            return False
+
+        if value is None:
+            return True
+
         actual_value = self.element.attributes.get(name)
-        if actual_value is None:
-            return False
-        if value is not None and actual_value != value:
-            return False
-        return True
+        return actual_value == value
 
 
 def query_by_label_text(dom: LexborHTMLParser, text: str) -> Optional[QueryResult]:
