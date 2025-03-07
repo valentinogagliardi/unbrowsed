@@ -8,13 +8,13 @@ from unbrowsed import parse_html, get_by_label_text, query_by_label_text, query_
 def test_to_have_attribute_existence():
     html = """
     <label for="username">Username</label>
-    <input id="username" type="email" required>
+    <input id="username" required type="email" required>
     """
     dom = parse_html(html)
     
     input_element = get_by_label_text(dom, "Username")
     assert input_element.to_have_attribute("type")
-    assert not input_element.to_have_attribute("required")
+    assert input_element.to_have_attribute("required")
     assert not input_element.to_have_attribute("placeholder")
 
 
