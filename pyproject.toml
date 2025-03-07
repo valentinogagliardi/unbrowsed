@@ -30,7 +30,8 @@ dependencies = [
 
 [project.optional-dependencies]
 test = [
-    "pytest>=7.0.0"
+    "pytest>=7.0.0",
+    "coverage[toml]"
 ]
 
 [project.urls]
@@ -40,3 +41,19 @@ test = [
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = "test_*.py"
+
+[tool.coverage.run]
+branch = true
+parallel = true
+source = [
+    "unbrowsed",
+    "tests"
+]
+
+[tool.coverage.paths]
+source = [
+    "src",
+]
+
+[tool.coverage.report]
+show_missing = true

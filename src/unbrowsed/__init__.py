@@ -5,9 +5,9 @@ from unbrowsed.queries import (
     query_by_text,
     MultipleElementsFoundError,
     NoElementsFoundError,
+    QueryResult,
 )
 
-__version__ = "0.1.0"
 __all__ = [
     "parse_html",
     "query_by_label_text",
@@ -15,4 +15,5 @@ __all__ = [
     "query_by_text",
     "MultipleElementsFoundError",
     "NoElementsFoundError",
+    "QueryResult",
 ]

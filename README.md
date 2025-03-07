@@ -74,8 +74,8 @@ To release a new version:
 2. Create and push a new tag:
 
 ```bash
-git tag v0.1.0  # Use appropriate version
-git push origin v0.1.0
+git tag 0.1.0
+git push origin 0.1.0
 ```
 
 This will trigger the CI pipeline to build and publish the package to PyPI automatically.
