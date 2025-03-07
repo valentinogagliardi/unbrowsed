@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Any
 
 from selectolax.parser import Node
 from selectolax.lexbor import LexborHTMLParser
@@ -22,7 +22,43 @@ class NoElementsFoundError(AssertionError):
         )
 
 
-def query_by_label_text(dom: LexborHTMLParser, text: str) -> Optional[Node]:
+class QueryResult:
+    def __init__(self, element: Optional[Node], context: str = ""):
+        self.element = element
+        self.context = context
+
+    def __bool__(self) -> bool:
+        return self.element is not None
+
+    def __eq__(self, other) -> bool:
+        if other is None:
+            return self.element is None
+        return super().__eq__(other)
+
+    def to_have_attribute(self, name: str, value: Any = None) -> None:
+        if not self.element:
+            raise AssertionError(f"Element not found: {self.context}")
+
+        if name not in self.element.attributes:
+            raise AssertionError(
+                f"Element {self.context}\n"
+                f"Expected to have attribute: {name}\n"
+                f"Actual attributes: {list(self.element.attributes.keys())}"
+            )
+
+        if value is not None and self.element.attributes.get(name) != value:
+            raise AssertionError(
+                f"Element {self.context}\n"
+                f"Attribute {name} value mismatch\n"
+                f"Expected: {value}\n"
+                f"Actual: {self.element.attributes.get(name)}"
+            )
+
+
+def query_by_label_text(dom: LexborHTMLParser, text: str) -> Optional[QueryResult]:
+    """
+    Queries the DOM for an element associated with a label containing the specified text.
+    """
     search_text = text.strip()
     matches = []
 
@@ -39,17 +75,25 @@ def query_by_label_text(dom: LexborHTMLParser, text: str) -> Optional[Node]:
     if len(matches) > 1:
         raise MultipleElementsFoundError(text, len(matches))
 
-    return matches[0] if matches else None
+    if not matches:
+        return None
+    return QueryResult(matches[0], f"with label text '{text}'")
 
 
-def get_by_label_text(dom: LexborHTMLParser, text: str) -> Node:
+def get_by_label_text(dom: LexborHTMLParser, text: str) -> QueryResult:
+    """
+    Retrieves an element from the DOM by its label text.
+    """
     result = query_by_label_text(dom, text)
     if not result:
         raise NoElementsFoundError(text)
     return result
 
 
-def query_by_text(dom: LexborHTMLParser, text: str) -> Optional[Node]:
+def query_by_text(dom: LexborHTMLParser, text: str) -> Optional[QueryResult]:
+    """
+    Queries the DOM for an element with the exact specified text.
+    """
     search_text = " ".join(text.strip().lower().split())
     matches = []
 
@@ -74,10 +118,15 @@ def query_by_text(dom: LexborHTMLParser, text: str) -> Optional[Node]:
 
             raise MultipleElementsFoundError(text, len(matches), "text")
 
-    return matches[0] if matches else None
+    if not matches:
+        return None
+    return QueryResult(matches[0], f"with text '{text}'")
 
 
 def is_parent_of(parent: Node, child: Node) -> bool:
+    """
+    Determines if the given parent node is an ancestor of the given child node.
+    """
     current = child.parent
     while current:
         if current == parent:
