@@ -27,7 +27,7 @@ class NoElementsFoundError(AssertionError):
 class QueryResult:
     """Wrapper class for query result."""
 
-    def __init__(self, element: Optional[LexborNode], context: str = ""):
+    def __init__(self, element: LexborNode, context: str = ""):
         self.element = element
         self.context = context
 
@@ -35,8 +35,6 @@ class QueryResult:
         """
         Check if the element has the specified attribute (and optionally matches value).
         """
-        if not self.element:
-            return False
 
         if name not in self.element.attributes:
             return False
