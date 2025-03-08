@@ -40,17 +40,6 @@ def test_query_by_text_prioritize_child():
     )
 
 
-@pytest.mark.skip(reason="todo")
-def test_query_by_text_whitespace_handling():
-    html = """
-    <div>  Hello   World  </div>
-    <p>Another text</p>
-    """
-    dom = parse_html(html)
-
-    assert query_by_text(dom, "Hello World")
-
-
 def test_query_by_text_no_match():
     html = """
     <div>Hello World</div>

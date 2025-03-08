@@ -48,15 +48,6 @@ def test_get_by_text_prioritize_child():
     )
 
 
-@pytest.mark.skip(reason="todo")
-def test_get_by_text_whitespace_handling():
-    html = """
-    <div>  Hello   World  </div>
-    <p>Another text</p>
-    """
-    _dom = parse_html(html)
-
-
 def test_get_by_text_no_match():
     html = """
     <div>Hello World</div>
@@ -81,13 +72,6 @@ def test_get_by_text_multiple_matches():
     assert "Duplicate Text" in str(excinfo.value)
     assert "get_all_by_text" in str(excinfo.value)
 
-
-@pytest.mark.skip(reason="todo")
-def test_get_by_text_nested_elements():
-    html = """
-    <div>Parent <span>Child</span></div>
-    """
-    _dom = parse_html(html)
 
 
 def test_to_have_attribute():
