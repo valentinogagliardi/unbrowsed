@@ -1,2 +1,3 @@
 furo
 sphinx
+selectolax>=0.3.28
