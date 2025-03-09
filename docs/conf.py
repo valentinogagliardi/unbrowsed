@@ -48,13 +48,8 @@ language = 'en'
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
 # The theme to use for HTML and HTML Help pages
-html_theme = 'sphinx_rtd_theme'
 
-# Theme options
-html_theme_options = {
-    'navigation_depth': 4,
-    'collapse_navigation': False,
-}
+html_theme = "furo"
 
 # -- Intersphinx configuration -----------------------------------------------
 # This allows you to link to other projects' documentation
