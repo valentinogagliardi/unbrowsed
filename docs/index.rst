@@ -10,10 +10,8 @@ unbrowsed allows you to test HTML without spawning a browser. It provides a simp
 Features
 --------
 
-- Fast HTML parsing using `selectolax <https://github.com/rushter/selectolax>`_
-- Browser-free testing of HTML content
+- Fast HTML parsing with `selectolax <https://github.com/rushter/selectolax>`_
 - Query functions that encourage accessible testing practices
-- Simple, Pythonic API
 
 .. toctree::
    :maxdepth: 2

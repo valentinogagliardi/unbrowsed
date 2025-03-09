@@ -49,7 +49,7 @@ def query_by_label_text(
     Raises:
         MultipleElementsFoundError: If multiple elements with matching label text are found.
 
-        .. versionadded:: 0.1.0a9
+    .. versionadded:: 0.1.0a9
            The *exact* parameter.
     """
     search_text = TextMatch(text, exact=exact)
@@ -95,7 +95,7 @@ def get_by_label_text(dom: LexborHTMLParser, text: str, exact=True) -> QueryResu
         NoElementsFoundError: If no elements with the specified label text are found.
         MultipleElementsFoundError: If multiple elements with matching label text are found.
 
-        .. versionadded:: 0.1.0a9
+    .. versionadded:: 0.1.0a9
            The *exact* parameter.
     """
     try:
@@ -128,7 +128,7 @@ def query_by_text(
     Raises:
         MultipleElementsFoundError: If multiple elements with matching text are found.
 
-        .. versionadded:: 0.1.0a9
+    .. versionadded:: 0.1.0a9
            The *exact* parameter.
     """
     search_text = TextMatch(text, exact=exact)
@@ -181,7 +181,7 @@ def get_by_text(dom: LexborHTMLParser, text: str, exact=True) -> QueryResult:
         NoElementsFoundError: If no elements with the specified text are found.
         MultipleElementsFoundError: If multiple elements with matching text are found.
 
-        .. versionadded:: 0.1.0a9
+    .. versionadded:: 0.1.0a9
            The *exact* parameter.
     """
     try:

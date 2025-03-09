@@ -10,7 +10,6 @@ unbrowsed provides a simple API for testing HTML content without a browser. Here
 
     from unbrowsed import parse_html, query_by_label_text
 
-    # Parse HTML content
     html = """
     <form>
         <label for="username">Username</label>
@@ -22,9 +21,8 @@ unbrowsed provides a simple API for testing HTML content without a browser. Here
     """
     dom = parse_html(html)
 
-    # Query elements by label text
     username_input = query_by_label_text(dom, "Username")
-    assert username_input is not None
+    assert username_input
 
 Querying Elements
 -----------------
@@ -49,13 +47,8 @@ Find elements containing specific text:
     """
     dom = parse_html(html)
 
-    # query_by_text returns None if no element is found
-    heading = query_by_text(dom, "Welcome")
-    assert heading.tag == "h1"
-
-    # get_by_text raises an exception if no element is found
-    button = get_by_text(dom, "Click me")
-    assert button.tag == "button"
+    assert query_by_text(dom, "Welcome")
+    assert get_by_text(dom, "Click me")
 
 Query by Label Text
 ~~~~~~~~~~~~~~~~~~~
@@ -73,18 +66,17 @@ Find form elements by their associated label text:
     </form>
     """
     dom = parse_html(html)
-
-    email_input = query_by_label_text(dom, "Email Address")
-    assert email_input.attributes.get("type") == "email"
+    
+    assert uery_by_label_text(dom, "Email Address")
 
 Assertions
----------~
+----------
 
-Unbrowsed provides assertion helpers for testing element properties:
+unbrowsed provides assertion helpers for testing element properties:
 
 .. code-block:: python
 
-    from unbrowsed import parse_html, get_by_text, to_have_attribute
+    from unbrowsed import parse_html, get_by_text
 
     html = """
     <div>
@@ -94,5 +86,5 @@ Unbrowsed provides assertion helpers for testing element properties:
     dom = parse_html(html)
 
     link = get_by_text(dom, "Visit Example")
-    assert to_have_attribute(link, "href", "https://example.com")
-    assert to_have_attribute(link, "class", "link")
+    assert link.to_have_attribute("href", "https://example.com")
+    assert link.to_have_attribute("class", "link")
