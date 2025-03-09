@@ -1,8 +1,11 @@
+"""unbrowsed queries."""
+
 from typing import Optional, Any
 
 from selectolax.lexbor import LexborHTMLParser, LexborNode
 
 from unbrowsed.matchers import TextMatch
+from unbrowsed.exceptions import MultipleElementsFoundError, NoElementsFoundError
 
 
 class QueryResult:
