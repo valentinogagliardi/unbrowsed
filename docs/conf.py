@@ -4,6 +4,8 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 
 # -- Project information -----------------------------------------------------
+import sys
+from pathlib import Path
 
 project = "unbrowsed"
 copyright = "2025, Valentino Gagliardi"
