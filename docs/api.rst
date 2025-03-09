@@ -1,15 +1,7 @@
 API Reference
 =============
 
-This section provides detailed documentation for all public modules, classes, and functions in Unbrowsed.
-
-Parser Module
--------------
-
-.. automodule:: unbrowsed.parser
-   :members:
-   :undoc-members:
-   :show-inheritance:
+This section provides detailed documentation for all public modules, classes, and functions in unbrowsed.
 
 Matchers Module
 ---------------

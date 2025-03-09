@@ -1,6 +1,4 @@
-import pytest
-
-from unbrowsed import parse_html, get_by_label_text, query_by_text
+from unbrowsed import get_by_label_text, parse_html, query_by_text
 
 
 def test_to_have_attribute_existence():

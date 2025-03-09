@@ -1,10 +1,10 @@
 import pytest
 
 from unbrowsed import (
-    parse_html,
-    get_by_label_text,
     MultipleElementsFoundError,
     NoElementsFoundError,
+    get_by_label_text,
+    parse_html,
 )
 
 
