@@ -321,3 +321,67 @@ def get_by_role(
         raise MultipleElementsFoundError(
             role, e.args[0].split()[1], alt_method="get_all_by_role"
         )
+
+
+def query_all_by_role(
+    dom: Parser, role: str, current: Optional[Union[bool, str]] = None
+) -> list[QueryResult]:
+    """
+    Queries the DOM for all elements with the specified ARIA role.
+
+    Args:
+        dom: The parsed DOM to search within.
+        role: The ARIA role to search for.
+        current: Optional value to check for aria-current attribute.
+                 Can be a boolean or string "true".
+
+    Returns:
+        A list of QueryResult objects containing the matched elements.
+
+    .. versionadded:: 0.1.0a13
+    """
+    role_matcher = RoleMatcher(role)
+    matches = []
+
+    for element in dom.css("*"):
+        if not role_matcher.matches(element):
+            continue
+
+        if current is not None:
+            expected = str(current).lower() == "true"
+            actual = element.attributes.get("aria-current", "") == "true"
+            if actual != expected:
+                continue
+
+        matches.append(QueryResult(element))
+
+    return matches
+
+
+def get_all_by_role(
+    dom: Parser, role: str, current: Optional[Union[bool, str]] = None
+) -> list[QueryResult]:
+    """
+    Retrieves all elements from the DOM by their ARIA role.
+
+    Similar to query_all_by_role but throws an error if no elements are found.
+
+    Args:
+        dom: The parsed DOM to search within.
+        role: The ARIA role to search for.
+        current: Optional value to check for aria-current attribute.
+                 Can be a boolean or string "true".
+
+    Returns:
+        A list of QueryResult objects containing the matched elements.
+
+    Raises:
+        NoElementsFoundError:
+            If no elements with the specified role are found.
+
+    .. versionadded:: 0.1.0a13
+    """
+    results = query_all_by_role(dom, role, current=current)
+    if not results:
+        raise NoElementsFoundError(role, alt_method="query_all_by_role")
+    return results
