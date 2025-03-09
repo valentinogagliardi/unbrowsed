@@ -40,8 +40,9 @@ optional-dependencies.test = [
   "coverage[toml]",
   "pytest>=7",
 ]
-urls."Bug Tracker" = "https://github.com/username/unbrowsed/issues"
-urls."Homepage" = "https://github.com/username/unbrowsed"
+
+urls.Documentation = "https://unbrowsed.readthedocs.io"
+urls.Repository = "https://github.com/valentinogagliardi/unbrowsed"
 
 [tool.black]
 line-length = 79
