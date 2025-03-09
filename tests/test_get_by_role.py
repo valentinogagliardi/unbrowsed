@@ -118,3 +118,11 @@ def test_by_role_input():
     """
     dom = parse_html(html)
     assert get_by_role(dom, "textbox")
+
+
+def test_by_role_meter():
+    html = """
+        <td><meter value="100">100%</meter></td>
+        """
+    dom = parse_html(html)
+    assert get_by_role(dom, "meter").to_have_attribute("value", "100")

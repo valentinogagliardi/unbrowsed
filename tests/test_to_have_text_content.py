@@ -1,12 +1,9 @@
-
-
 from unbrowsed import (
     get_by_label_text,
     get_by_role,
     get_by_text,
     parse_html,
     query_by_label_text,
-
     query_by_text,
     QueryResult,
 )
@@ -21,10 +18,8 @@ def test_to_have_text_content_with_get_by_label_text():
     """
     dom = parse_html(html)
 
-
     input_element = get_by_label_text(dom, "Username")
     assert not input_element.to_have_text_content("Enter your username")
-    
 
     textarea_element = get_by_label_text(dom, "Bio")
     assert textarea_element.to_have_text_content("User biography text")
@@ -40,12 +35,10 @@ def test_to_have_text_content_with_get_by_role():
     """
     dom = parse_html(html)
 
-
     button = get_by_role(dom, "button")
     assert button.to_have_text_content("Submit Form")
     assert not button.to_have_text_content("submit form")
     assert button.to_have_text_content("submit", exact=False)
-    
 
     link = get_by_role(dom, "link")
     assert link.to_have_text_content("Visit Example")
@@ -66,12 +59,11 @@ def test_to_have_text_content_with_get_by_text():
     assert div.to_have_text_content("Hello World")
     assert not div.to_have_text_content("hello world")
     assert div.to_have_text_content("Hello", exact=False)
-    
 
     p = get_by_text(dom, "Another text")
     assert p.to_have_text_content("Another text")
     assert p.to_have_text_content("Another", exact=False)
-    
+
     span = get_by_text(dom, "Third element")
     assert span.to_have_text_content("Third element")
     assert not span.to_have_text_content("third element")
@@ -106,7 +98,7 @@ def test_to_have_text_content_with_query_by_role():
     contact_link = dom.css_first('a[aria-current="page"]')
     assert contact_link is not None
     current_link = QueryResult(contact_link)
-    
+
     assert current_link.to_have_text_content("Contact")
     assert not current_link.to_have_text_content("contact")
     assert current_link.to_have_text_content("cont", exact=False)
@@ -124,8 +116,10 @@ def test_to_have_text_content_with_query_by_text():
     assert first_div.to_have_text_content("First", exact=False)
     assert first_div.to_have_text_content("some text", exact=False)
     assert not first_div.to_have_text_content("different content")
-    
+
     second_div = query_by_text(dom, "Second paragraph with different content.")
-    assert second_div.to_have_text_content("Second paragraph with different content.")
+    assert second_div.to_have_text_content(
+        "Second paragraph with different content."
+    )
     assert second_div.to_have_text_content("different", exact=False)
     assert not second_div.to_have_text_content("some text")
