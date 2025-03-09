@@ -1,13 +1,13 @@
 Installation
-===========
+============
 
 Requirements
------------
+------------
 
-Unbrowsed requires Python 3.8 or higher.
+unbrowsed requires Python 3.8 or higher.
 
 Basic Installation
------------------
+------------------
 
 You can install Unbrowsed using pip:
 
@@ -16,7 +16,7 @@ You can install Unbrowsed using pip:
     pip install unbrowsed
 
 Development Installation
------------------------
+------------------------
 
 For development, you can clone the repository and install it in development mode:
 

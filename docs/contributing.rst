@@ -1,10 +1,10 @@
 Contributing
-===========
+============
 
 Thank you for considering contributing to Unbrowsed! This document provides guidelines and instructions for contributing to the project.
 
 Setting Up Development Environment
----------------------------------
+----------------------------------
 
 1. Fork the repository on GitHub
 2. Clone your fork locally:
@@ -23,7 +23,7 @@ Setting Up Development Environment
        pip install -e ".[test,docs]"
 
 Running Tests
-------------
+-------------
 
 Unbrowsed uses pytest for testing. To run the tests:
 
@@ -38,12 +38,12 @@ To run tests with coverage:
     pytest --cov=unbrowsed
 
 Code Style
----------
+----------
 
 Unbrowsed follows PEP 8 style guidelines. Please ensure your code adheres to these standards.
 
 Documentation
-------------
+-------------
 
 When adding new features, please update the documentation accordingly:
 
@@ -57,7 +57,7 @@ When adding new features, please update the documentation accordingly:
        make html
 
 Pull Request Process
-------------------
+--------------------
 
 1. Create a new branch for your feature or bugfix
 2. Make your changes and commit them with clear, descriptive commit messages
@@ -66,7 +66,7 @@ Pull Request Process
 5. Ensure all tests pass and the documentation builds correctly
 
 Reporting Issues
---------------
+----------------
 
 If you find a bug or have a feature request, please open an issue on the GitHub repository. Please include:
 

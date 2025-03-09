@@ -1,17 +1,15 @@
-# Unbrowsed
+# unbrowsed
 
 A browserless HTML testing library for Python, inspired by [testing-library](https://testing-library.com/).
 
 ## Overview
 
-Unbrowsed allows you to test HTML without spawning a browser. It provides a simple, intuitive API for querying HTML elements similar to testing-library's approach, encouraging accessible and maintainable tests.
+unbrowsed allows you to test HTML without spawning a browser. It provides a simple, intuitive API for querying HTML elements similar to testing-library's approach, encouraging accessible and maintainable tests.
 
 ## Features
 
-- Fast HTML parsing using [selectolax](https://github.com/rushter/selectolax)
-- Browser-free testing of HTML content
+- Fast HTML parsing with [selectolax](https://github.com/rushter/selectolax)
 - Query functions that encourage accessible testing practices
-- Simple, Pythonic API
 
 ## Installation
 
