@@ -12,8 +12,6 @@ sphinx:
   configuration: docs/conf.py
   fail_on_warning: true
 
-formats: all
-
 python:
   install:
   - requirements: docs/requirements.txt
