@@ -41,13 +41,15 @@ class RoleMatcher:
     @staticmethod
     def get_implicit_role(node: LexborNode):
         tag = node.tag
+        if not tag:
+            return None
         handler = IMPLICIT_ROLES.get(tag)
 
         if callable(handler):
             return handler(node)
         if isinstance(handler, dict):
             if tag == "input":
-                input_type = node.attributes.get("type", "text").lower()
+                input_type = node.attributes.get("type", "")
                 return handler.get(input_type)
         return handler if isinstance(handler, str) else None
 

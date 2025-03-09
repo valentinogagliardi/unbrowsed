@@ -132,7 +132,7 @@ def query_by_text(dom: Parser, text: str, exact=True) -> Optional[QueryResult]:
 
     Raises:
         MultipleElementsFoundError:
-        If multiple elements with matching text are found.
+            If multiple elements with matching text are found.
 
     .. versionadded:: 0.1.0a9
            The *exact* parameter.
@@ -157,7 +157,7 @@ def query_by_text(dom: Parser, text: str, exact=True) -> Optional[QueryResult]:
             for i, parent in enumerate(matches):
                 for j, child in enumerate(matches):
                     if i != j and is_parent_of(parent, child):
-                        return child
+                        return QueryResult(matches[i])
 
             raise MultipleElementsFoundError(
                 text, len(matches), alt_method="query_all_by_text"
@@ -185,9 +185,10 @@ def get_by_text(dom: Parser, text: str, exact=True) -> QueryResult:
         A QueryResult containing the matched element.
 
     Raises:
-        NoElementsFoundError: If no elements with the specified text are found.
+        NoElementsFoundError:
+            If no elements with the specified text are found.
         MultipleElementsFoundError:
-        If multiple elements with matching text are found.
+            If multiple elements with matching text are found.
 
     .. versionadded:: 0.1.0a9
            The *exact* parameter.
@@ -220,7 +221,7 @@ def query_by_role(
 
     Raises:
         MultipleElementsFoundError:
-        If multiple elements with matching role are found.
+            If multiple elements with matching role are found.
 
     .. versionadded:: 0.1.0a10
     """
@@ -234,9 +235,7 @@ def query_by_role(
         if current is not None:
 
             expected = str(current).lower() == "true"
-            actual = (
-                element.attributes.get("aria-current", "").lower() == "true"
-            )
+            actual = element.attributes.get("aria-current", "") == "true"
             if actual != expected:
                 continue
 
@@ -284,9 +283,10 @@ def get_by_role(
         A QueryResult containing the matched element and context description.
 
     Raises:
-        NoElementsFoundError: If no elements with the specified role are found.
+        NoElementsFoundError:
+            If no elements with the specified role are found.
         MultipleElementsFoundError:
-        If multiple elements with matching role are found.
+            If multiple elements with matching role are found.
 
     .. versionadded:: 0.1.0a10
     """

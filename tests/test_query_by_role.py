@@ -45,7 +45,7 @@ def test_query_by_role_parent_child_relationship():
     </nav>
     """
     dom = parse_html(html)
-    
+
     result = query_by_role(dom, "navigation")
     assert result
     html_single_nav = """
@@ -57,7 +57,7 @@ def test_query_by_role_parent_child_relationship():
     dom_single_nav = parse_html(html_single_nav)
     result = query_by_role(dom_single_nav, "navigation")
     assert result
-    
+
     with pytest.raises(MultipleElementsFoundError):
         query_by_role(dom, "link")
 
@@ -70,9 +70,9 @@ def test_query_by_role_current_attribute():
     </nav>
     """
     dom = parse_html(html)
-    
+
     result = query_by_role(dom, "link", current=True)
     assert result
-    
+
     result = query_by_role(dom, "link", current="true")
     assert result
