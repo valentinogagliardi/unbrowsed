@@ -2,9 +2,9 @@ Usage
 =====
 
 Basic Usage
-----------
+-----------
 
-Unbrowsed provides a simple API for testing HTML content without a browser. Here's a basic example:
+unbrowsed provides a simple API for testing HTML content without a browser. Here's a basic example:
 
 .. code-block:: python
 
@@ -27,12 +27,12 @@ Unbrowsed provides a simple API for testing HTML content without a browser. Here
     assert username_input is not None
 
 Querying Elements
-----------------
+-----------------
 
-Unbrowsed provides several query functions inspired by testing-library:
+unbrowsed provides several query functions inspired by testing-library:
 
 Query by Text
-~~~~~~~~~~~~
+~~~~~~~~~~~~~
 
 Find elements containing specific text:
 
@@ -58,7 +58,7 @@ Find elements containing specific text:
     assert button.tag == "button"
 
 Query by Label Text
-~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~
 
 Find form elements by their associated label text:
 
@@ -78,7 +78,7 @@ Find form elements by their associated label text:
     assert email_input.attributes.get("type") == "email"
 
 Assertions
----------
+---------~
 
 Unbrowsed provides assertion helpers for testing element properties:
 

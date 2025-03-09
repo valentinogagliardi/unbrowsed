@@ -1,17 +1,11 @@
-.. unbrowsed documentation master file, created by
-   sphinx-quickstart on Sun Mar  9 10:00:12 2025.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
-Welcome to Unbrowsed
+Welcome to unbrowsed
 ====================
 
-**Unbrowsed** is a browserless HTML testing library for Python, inspired by `testing-library <https://testing-library.com/>`_.
+**unbrowsed** is a browserless HTML testing library for Python, inspired by `testing-library <https://testing-library.com/>`_.
 
 Overview
 --------
-
-Unbrowsed allows you to test HTML without spawning a browser. It provides a simple, intuitive API for querying HTML elements similar to testing-library's approach, encouraging accessible and maintainable tests.
+unbrowsed allows you to test HTML without spawning a browser. It provides a simple, intuitive API for querying HTML elements similar to testing-library's approach, encouraging accessible and maintainable tests.
 
 Features
 --------
@@ -31,7 +25,7 @@ Features
    contributing
 
 Indices and tables
-=================
+==================
 
 * :ref:`genindex`
 * :ref:`modindex`
