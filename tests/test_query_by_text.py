@@ -1,6 +1,6 @@
 import pytest
 
-from unbrowsed import parse_html, query_by_text, MultipleElementsFoundError
+from unbrowsed import MultipleElementsFoundError, parse_html, query_by_text
 
 
 def test_query_by_text():
@@ -29,15 +29,11 @@ def test_query_by_text_exact_match():
 
 def test_query_by_text_prioritize_child():
     html = """
-    <input type="submit" value="Login" /></form><div><p>Invalid email address or password. Please correct and try again.</p></div></div></main>'
+    <input type="submit" value="Login" /></form>
+    <div><p>Invalid email address or password.</p></div>'
     """
     dom = parse_html(html)
-    assert (
-        query_by_text(
-            dom, "Invalid email address or password. Please correct and try again."
-        )
-        is not None
-    )
+    assert query_by_text(dom, "Invalid email address or password.") is not None
 
 
 def test_query_by_text_no_match():

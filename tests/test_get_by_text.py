@@ -1,10 +1,10 @@
 import pytest
 
 from unbrowsed import (
-    parse_html,
-    get_by_text,
     MultipleElementsFoundError,
     NoElementsFoundError,
+    get_by_text,
+    parse_html,
 )
 
 
@@ -37,15 +37,11 @@ def test_get_by_text_exact():
 
 def test_get_by_text_prioritize_child():
     html = """
-    <input type="submit" value="Login" /></form><div><p>Invalid email address or password. Please correct and try again.</p></div></div></main>'
+    <input type="submit" value="Login" /></form>
+    <div><p>Invalid email address or password.</p></div>'
     """
     dom = parse_html(html)
-    assert (
-        get_by_text(
-            dom, "Invalid email address or password. Please correct and try again."
-        )
-        is not None
-    )
+    assert get_by_text(dom, "Invalid email address or password.") is not None
 
 
 def test_get_by_text_no_match():
@@ -71,7 +67,6 @@ def test_get_by_text_multiple_matches():
     assert "Found 2 elements" in str(excinfo.value)
     assert "Duplicate Text" in str(excinfo.value)
     assert "get_all_by_text" in str(excinfo.value)
-
 
 
 def test_to_have_attribute():

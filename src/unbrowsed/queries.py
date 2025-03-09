@@ -1,11 +1,16 @@
 """unbrowsed queries."""
 
-from typing import Optional, Any
+from typing import Any, Optional
 
-from selectolax.lexbor import LexborHTMLParser, LexborNode
+from selectolax.lexbor import LexborHTMLParser as Parser
+from selectolax.lexbor import LexborNode
 
+from unbrowsed.exceptions import (
+    MultipleElementsFoundError,
+    NoElementsFoundError,
+)
 from unbrowsed.matchers import TextMatch
-from unbrowsed.exceptions import MultipleElementsFoundError, NoElementsFoundError
+from unbrowsed.utils import is_parent_of
 
 
 class QueryResult:
@@ -17,7 +22,8 @@ class QueryResult:
 
     def to_have_attribute(self, name: str, value: Any = None) -> bool:
         """
-        Check if the element has the specified attribute (and optionally matches value).
+        Check if the element has the specified attribute
+         (and optionally matches value).
         """
 
         if name not in self.element.attributes:
@@ -31,23 +37,25 @@ class QueryResult:
 
 
 def query_by_label_text(
-    dom: LexborHTMLParser, text: str, exact=True
+    dom: Parser, text: str, exact=True
 ) -> Optional[QueryResult]:
     """
-    Queries the DOM for an element associated with a label containing the specified text.
+    Queries the DOM for an element associated with a label
+    containing the specified text.
 
     Args:
         dom: The parsed DOM to search within.
         text: The label text to search for.
-        exact: Defaults to True; matches full strings, case-sensitive. When False,
-               matches substrings and is not case-sensitive.
+        exact: Defaults to `True`; matches full strings, case-sensitive.
+               When `False`, matches substrings and is not case-sensitive.
 
     Returns:
         A QueryResult containing the matched element and context description,
         or None if no matches were found.
 
     Raises:
-        MultipleElementsFoundError: If multiple elements with matching label text are found.
+        MultipleElementsFoundError:
+        If multiple elements with matching label text are found.
 
     .. versionadded:: 0.1.0a9
            The *exact* parameter.
@@ -67,7 +75,7 @@ def query_by_label_text(
 
     if len(matches) > 1:
         raise MultipleElementsFoundError(
-            text, len(matches), suggested_method="get_all_by_label_text"
+            text, len(matches), alt_method="get_all_by_label_text"
         )
 
     if not matches:
@@ -75,25 +83,27 @@ def query_by_label_text(
     return QueryResult(matches[0], f"with label text '{text}'")
 
 
-def get_by_label_text(dom: LexborHTMLParser, text: str, exact=True) -> QueryResult:
+def get_by_label_text(dom: Parser, text: str, exact=True) -> QueryResult:
     """
     Retrieves an element from the DOM by its label text.
 
-    Similar to query_by_label_text but throws an error if no element is found or if
-    multiple elements are found with the matching label text.
+    Similar to query_by_label_text but throws an error if no element is found
+    or if multiple elements are found with the matching label text.
 
     Args:
         dom: The parsed DOM to search within.
         text: The label text to search for.
-        exact: Defaults to True; matches full strings, case-sensitive. When False,
-               matches substrings and is not case-sensitive.
+        exact: Defaults to `True`; matches full strings, case-sensitive.
+               When `False`, matches substrings and is not case-sensitive.
 
     Returns:
         A QueryResult containing the matched element and context description.
 
     Raises:
-        NoElementsFoundError: If no elements with the specified label text are found.
-        MultipleElementsFoundError: If multiple elements with matching label text are found.
+        NoElementsFoundError:
+            If no elements with the specified label text are found.
+        MultipleElementsFoundError:
+            If multiple elements with matching label text are found.
 
     .. versionadded:: 0.1.0a9
            The *exact* parameter.
@@ -101,32 +111,31 @@ def get_by_label_text(dom: LexborHTMLParser, text: str, exact=True) -> QueryResu
     try:
         result = query_by_label_text(dom, text, exact)
         if not result:
-            raise NoElementsFoundError(text, suggested_method="query_by_label_text")
+            raise NoElementsFoundError(text, alt_method="query_by_label_text")
         return result
     except MultipleElementsFoundError as e:
         raise MultipleElementsFoundError(
-            text, e.args[0].split()[1], suggested_method="get_all_by_label_text"
+            text, e.args[0].split()[1], alt_method="get_all_by_label_text"
         )
 
 
-def query_by_text(
-    dom: LexborHTMLParser, text: str, exact=True
-) -> Optional[QueryResult]:
+def query_by_text(dom: Parser, text: str, exact=True) -> Optional[QueryResult]:
     """
     Queries the DOM for an element containing the specified text.
 
     Args:
         dom: The parsed DOM to search within.
         text: The text content to search for.
-        exact: Defaults to True; matches full strings, case-sensitive. When False,
-               matches substrings and is not case-sensitive.
+        exact: Defaults to `True`; matches full strings, case-sensitive.
+               When `False`, matches substrings and is not case-sensitive.
 
     Returns:
         A QueryResult containing the matched element and context description,
         or None if no matches were found.
 
     Raises:
-        MultipleElementsFoundError: If multiple elements with matching text are found.
+        MultipleElementsFoundError:
+        If multiple elements with matching text are found.
 
     .. versionadded:: 0.1.0a9
            The *exact* parameter.
@@ -141,7 +150,8 @@ def query_by_text(
             matches.append(element)
 
     if len(matches) > 1:
-        filtered_matches = [m for m in matches if m.tag not in ("html", "body")]
+        exclusions = ("html", "body")
+        filtered_matches = [m for m in matches if m.tag not in exclusions]
 
         if filtered_matches:
             matches = filtered_matches
@@ -153,7 +163,7 @@ def query_by_text(
                         return child
 
             raise MultipleElementsFoundError(
-                text, len(matches), suggested_method="query_all_by_text"
+                text, len(matches), alt_method="query_all_by_text"
             )
 
     if not matches:
@@ -161,7 +171,7 @@ def query_by_text(
     return QueryResult(matches[0], f"with text '{text}'")
 
 
-def get_by_text(dom: LexborHTMLParser, text: str, exact=True) -> QueryResult:
+def get_by_text(dom: Parser, text: str, exact=True) -> QueryResult:
     """
     Retrieves an element from the DOM by its text content.
 
@@ -171,15 +181,16 @@ def get_by_text(dom: LexborHTMLParser, text: str, exact=True) -> QueryResult:
     Args:
         dom: The parsed DOM to search within.
         text: The text content to search for.
-        exact: Defaults to True; matches full strings, case-sensitive. When False,
-               matches substrings and is not case-sensitive.
+        exact: Defaults to `True`; matches full strings, case-sensitive.
+               When `False`, matches substrings and is not case-sensitive.
 
     Returns:
         A QueryResult containing the matched element and context description.
 
     Raises:
         NoElementsFoundError: If no elements with the specified text are found.
-        MultipleElementsFoundError: If multiple elements with matching text are found.
+        MultipleElementsFoundError:
+        If multiple elements with matching text are found.
 
     .. versionadded:: 0.1.0a9
            The *exact* parameter.
@@ -187,21 +198,9 @@ def get_by_text(dom: LexborHTMLParser, text: str, exact=True) -> QueryResult:
     try:
         result = query_by_text(dom, text, exact=exact)
         if not result:
-            raise NoElementsFoundError(text, suggested_method="query_by_text")
+            raise NoElementsFoundError(text, alt_method="query_by_text")
         return result
     except MultipleElementsFoundError as e:
         raise MultipleElementsFoundError(
-            text, e.args[0].split()[1], suggested_method="get_all_by_text"
+            text, e.args[0].split()[1], alt_method="get_all_by_text"
         )
-
-
-def is_parent_of(parent: LexborNode, child: LexborNode) -> bool:
-    """
-    Determines if the given parent node is an ancestor of the given child node.
-    """
-    current = child.parent
-    while current:
-        if current == parent:
-            return True
-        current = current.parent
-    return False

@@ -1,9 +1,12 @@
 """Tests for the query_by_label_text function."""
 
 import pytest
-from selectolax.parser import HTMLParser
 
-from unbrowsed import parse_html, query_by_label_text, MultipleElementsFoundError
+from unbrowsed import (
+    MultipleElementsFoundError,
+    parse_html,
+    query_by_label_text,
+)
 
 
 def test_query_by_label_text():

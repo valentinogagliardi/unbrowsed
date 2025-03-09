@@ -66,7 +66,7 @@ Find form elements by their associated label text:
     </form>
     """
     dom = parse_html(html)
-    
+
     assert uery_by_label_text(dom, "Email Address")
 
 Assertions
