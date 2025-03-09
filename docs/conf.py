@@ -16,11 +16,9 @@ release = '0.1.0a9'
 
 # Add any Sphinx extension module names here, as strings
 extensions = [
-    'sphinx.ext.autodoc',      # Include documentation from docstrings
-    'sphinx.ext.viewcode',     # Add links to the source code
-    'sphinx.ext.napoleon',     # Support for NumPy and Google style docstrings
-    'sphinx.ext.intersphinx',  # Link to other project's documentation
-    'myst_parser',             # Support for Markdown
+    "sphinx.ext.autodoc",
+    "sphinx.ext.intersphinx",
+    "sphinx.ext.viewcode",
 ]
 
 # MyST parser configuration
