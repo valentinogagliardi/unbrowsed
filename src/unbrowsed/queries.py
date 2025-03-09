@@ -1,6 +1,6 @@
 """unbrowsed queries."""
 
-from typing import Any, Optional
+from typing import Any, Optional, Union
 
 from selectolax.lexbor import LexborHTMLParser as Parser
 from selectolax.lexbor import LexborNode
@@ -205,7 +205,7 @@ def get_by_text(dom: Parser, text: str, exact=True) -> QueryResult:
 
 
 def query_by_role(
-    dom: Parser, role: str, current: Optional[bool | str] = None
+    dom: Parser, role: str, current: Optional[Union[bool, str]] = None
 ) -> Optional[QueryResult]:
     """
     Queries the DOM for an element with the specified ARIA role.
@@ -265,7 +265,7 @@ def query_by_role(
 
 
 def get_by_role(
-    dom: Parser, role: str, current: Optional[bool | str] = None
+    dom: Parser, role: str, current: Optional[Union[bool, str]] = None
 ) -> QueryResult:
     """
     Retrieves an element from the DOM by its ARIA role.
