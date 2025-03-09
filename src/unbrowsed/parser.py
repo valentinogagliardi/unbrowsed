@@ -1,3 +1,5 @@
+"""unbrowsed parser."""
+
 from selectolax.lexbor import LexborHTMLParser
 
 

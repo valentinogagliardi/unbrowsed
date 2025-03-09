@@ -1,3 +1,6 @@
+"""unbrowsed matchers."""
+
+
 class TextMatch:
     """Wrapper class for text matching."""
 

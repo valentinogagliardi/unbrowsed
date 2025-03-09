@@ -4,10 +4,9 @@ from unbrowsed.queries import (
     get_by_label_text,
     query_by_text,
     get_by_text,
-    MultipleElementsFoundError,
-    NoElementsFoundError,
     QueryResult,
 )
+from unbrowsed.exceptions import MultipleElementsFoundError, NoElementsFoundError
 
 __all__ = [
     "parse_html",
