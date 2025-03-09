@@ -58,7 +58,7 @@ Find elements containing specific text:
     assert button.tag == "button"
 
 Query by Label Text
-~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~
 
 Find form elements by their associated label text:
 
