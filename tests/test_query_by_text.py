@@ -14,6 +14,17 @@ def test_query_by_text():
     assert query_by_text(dom, "Hello World")
     assert not query_by_text(dom, "Hello")
 
+    html = """
+        <div>
+            <h1>Welcome to my site</h1>
+            <p>This is a paragraph</p>
+            <button>Click me</button>
+        </div>
+        """
+    dom = parse_html(html)
+
+    assert query_by_text(dom, "Welcome", exact=False)
+
 
 def test_query_by_text_exact_match():
     html = """
