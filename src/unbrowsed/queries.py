@@ -34,6 +34,28 @@ class QueryResult:
         actual_value = self.element.attributes.get(name)
         return actual_value == value
 
+    def to_have_text_content(self, text: str, exact: bool = True) -> bool:
+        """
+        Check if the element's text content matches the specified text.
+
+        Args:
+            text: The text content to check for.
+            exact: Defaults to `True`; matches full strings, case-sensitive.
+                   When `False`, matches substrings and is not case-sensitive.
+
+        Returns:
+            `True` if the element's text content matches the specified text,
+            `False` otherwise.
+
+        .. versionadded:: 0.1.0a11
+        """
+        element_text = self.element.text(strip=True)
+
+        if exact:
+            return element_text == text
+        else:
+            return text.lower() in element_text.lower()
+
 
 def query_by_label_text(
     dom: Parser, text: str, exact=True
