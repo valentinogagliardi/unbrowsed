@@ -22,6 +22,29 @@ def test_query_by_label_text():
     assert not query_by_label_text(dom, "email")
     assert not query_by_label_text(dom, "Em")
 
+    html = """
+        <form>
+            <label for="username">Username</label>
+            <input id="username" type="text">
+            <label for="password">Password</label>
+            <input id="password" type="password">
+            <button type="submit">Login</button>
+        </form>
+        """
+    dom = parse_html(html)
+    username_input = query_by_label_text(dom, "Username")
+    assert username_input
+
+    html = """
+        <form>
+            <label for="email">Email Address</label>
+            <input id="email" type="email">
+        </form>
+        """
+    dom = parse_html(html)
+
+    assert query_by_label_text(dom, "Email Address")
+
 
 def test_query_by_label_text_exact():
     html = """
@@ -62,3 +85,28 @@ def test_query_by_label_text_multiple_matches():
 
     assert "Found 2 elements" in str(excinfo.value)
     assert "Contact" in str(excinfo.value)
+
+
+def test_query_by_label_text_no_target_id():
+    html = """
+    <label for="non-existent-id">Label Text</label>
+    """
+    dom = parse_html(html)
+    assert not query_by_label_text(dom, "Label Text")
+
+
+def test_query_by_label_text_no_control():
+    html = """
+    <label>Label Text</label>
+    """
+    dom = parse_html(html)
+    assert not query_by_label_text(dom, "Label Text")
+
+
+def test_query_by_label_text_with_empty_for():
+
+    html = """
+    <label for="">Label Text</label>
+    """
+    dom = parse_html(html)
+    assert not query_by_label_text(dom, "Label Text")

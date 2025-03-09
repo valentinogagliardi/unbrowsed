@@ -29,6 +29,16 @@ def test_get_by_label_text(labels_html):
 
     assert get_by_label_text(dom, "Password")
 
+    html = """
+        <form>
+            <label for="email">Email Address</label>
+            <input id="email" type="email">
+        </form>
+        """
+    dom = parse_html(html)
+
+    assert get_by_label_text(dom, "Email Address")
+
 
 def test_get_by_label_text_exact(labels_html):
     dom = parse_html(labels_html)

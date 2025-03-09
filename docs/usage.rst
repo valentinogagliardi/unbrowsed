@@ -29,7 +29,7 @@ Querying Elements
 
 unbrowsed provides several query functions inspired by testing-library:
 
-Query by Text
+By Text
 ~~~~~~~~~~~~~
 
 Find elements containing specific text:
@@ -47,10 +47,10 @@ Find elements containing specific text:
     """
     dom = parse_html(html)
 
-    assert query_by_text(dom, "Welcome")
+    assert query_by_text(dom, "Welcome", exact=False)
     assert get_by_text(dom, "Click me")
 
-Query by Label Text
+By Label Text
 ~~~~~~~~~~~~~~~~~~~
 
 Find form elements by their associated label text:
@@ -67,7 +67,8 @@ Find form elements by their associated label text:
     """
     dom = parse_html(html)
 
-    assert uery_by_label_text(dom, "Email Address")
+    assert query_by_label_text(dom, "Email Address")
+    assert get_by_label_text(dom, "Email Address")
 
 Assertions
 ----------
