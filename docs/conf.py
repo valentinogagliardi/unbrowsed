@@ -14,6 +14,7 @@ release = "0.1.0a9"
 
 # -- General configuration ---------------------------------------------------
 extensions = [
+    "sphinx.ext.napoleon",
     "sphinx.ext.autodoc",
     "sphinx.ext.intersphinx",
     "sphinx.ext.viewcode",
