@@ -15,6 +15,7 @@ IMPLICIT_ROLES = {
     "select": "combobox",
     "nav": "navigation",
     "main": "main",
+    "meter": "meter",
     "header": "banner",
     "footer": "contentinfo",
     "h1": "heading",
