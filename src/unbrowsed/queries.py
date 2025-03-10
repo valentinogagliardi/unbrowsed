@@ -227,7 +227,10 @@ def get_by_text(dom: Parser, text: str, exact=True) -> QueryResult:
 
 
 def query_by_role(
-    dom: Parser, role: str, current: Optional[Union[bool, str]] = None
+    dom: Parser,
+    role: str,
+    current: Optional[Union[bool, str]] = None,
+    name: Optional[str] = None,
 ) -> Optional[QueryResult]:
     """
     Queries the DOM for an element with the specified ARIA role.
@@ -235,8 +238,9 @@ def query_by_role(
     Args:
         dom: The parsed DOM to search within.
         role: The ARIA role to search for.
-        current: Optional value to check for aria-current attribute.
+        current: The value to check for aria-current attribute.
                  Can be a boolean or string "true".
+        name: The accessible name of the element.
 
     Returns:
         A QueryResult containing the matched element.
@@ -246,8 +250,10 @@ def query_by_role(
             If multiple elements with matching role are found.
 
     .. versionadded:: 0.1.0a10
+    .. versionadded:: 0.1.0a15
+        The *name* parameter.
     """
-    role_matcher = RoleMatcher(role)
+    role_matcher = RoleMatcher(target_role=role, name=name)
     matches = []
 
     for element in dom.css("*"):
@@ -255,7 +261,6 @@ def query_by_role(
             continue
 
         if current is not None:
-
             expected = str(current).lower() == "true"
             actual = element.attributes.get("aria-current", "") == "true"
             if actual != expected:
@@ -287,7 +292,10 @@ def query_by_role(
 
 
 def get_by_role(
-    dom: Parser, role: str, current: Optional[Union[bool, str]] = None
+    dom: Parser,
+    role: str,
+    current: Optional[Union[bool, str]] = None,
+    name: Optional[str] = None,
 ) -> QueryResult:
     """
     Retrieves an element from the DOM by its ARIA role.
@@ -298,8 +306,9 @@ def get_by_role(
     Args:
         dom: The parsed DOM to search within.
         role: The ARIA role to search for.
-        current: Optional value to check for aria-current attribute.
+        current: The value to check for aria-current attribute.
                  Can be a boolean or string "true".
+        name: The accessible name of the element.
 
     Returns:
         A QueryResult containing the matched element and context description.
@@ -311,9 +320,12 @@ def get_by_role(
             If multiple elements with matching role are found.
 
     .. versionadded:: 0.1.0a10
+    .. versionadded:: 0.1.0a15
+        The *name* parameter.
+    The
     """
     try:
-        result = query_by_role(dom, role, current=current)
+        result = query_by_role(dom, role, current=current, name=name)
         if not result:
             raise NoElementsFoundError(role, alt_method="query_by_role")
         return result
@@ -332,7 +344,7 @@ def query_all_by_role(
     Args:
         dom: The parsed DOM to search within.
         role: The ARIA role to search for.
-        current: Optional value to check for aria-current attribute.
+        current: The value to check for aria-current attribute.
                  Can be a boolean or string "true".
 
     Returns:

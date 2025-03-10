@@ -18,3 +18,11 @@ Queries Module
    :members:
    :undoc-members:
    :show-inheritance:
+
+Exceptions Module
+-----------------
+
+.. automodule:: unbrowsed.exceptions
+   :members:
+   :undoc-members:
+   :show-inheritance:

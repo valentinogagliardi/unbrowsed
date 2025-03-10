@@ -126,3 +126,43 @@ def test_by_role_meter():
         """
     dom = parse_html(html)
     assert get_by_role(dom, "meter").to_have_attribute("value", "100")
+
+
+def test_by_role_group():
+    html = """
+    <form>
+      <fieldset name="the name">
+        <legend>Choose your favorite monster</legend>
+
+        <input type="radio" id="kraken" name="monster" value="K" />
+        <label for="kraken">Kraken</label><br />
+
+        <input type="radio" id="sasquatch" name="monster" value="S" />
+        <label for="sasquatch">Sasquatch</label><br />
+
+        <input type="radio" id="mothman" name="monster" value="M" />
+        <label for="mothman">Mothman</label>
+      </fieldset>
+    </form>
+    """
+    dom = parse_html(html)
+    assert get_by_role(dom, "group").to_have_attribute("name", "the name")
+    assert get_by_role(dom, "group", name="Choose your favorite monster")
+
+    html = """
+    <form>
+      <fieldset>
+        <input type="radio" id="kraken" name="monster" value="K" />
+        <label for="kraken">Kraken</label><br />
+
+        <input type="radio" id="sasquatch" name="monster" value="S" />
+        <label for="sasquatch">Sasquatch</label><br />
+
+        <input type="radio" id="mothman" name="monster" value="M" />
+        <label for="mothman">Mothman</label>
+      </fieldset>
+    </form>
+    """
+    dom = parse_html(html)
+    with pytest.raises(NoElementsFoundError):
+        get_by_role(dom, "group", name="Choose your favorite monster")
