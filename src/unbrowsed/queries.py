@@ -263,7 +263,7 @@ def query_by_role(
 
     .. versionadded:: 0.1.0a10
     .. versionadded:: 0.1.0a15
-        The *name* parameter.
+           The *name* parameter.
     """
     role_matcher = RoleMatcher(target_role=role, name=name)
     matches = []
@@ -334,7 +334,7 @@ def get_by_role(
 
     .. versionadded:: 0.1.0a10
     .. versionadded:: 0.1.0a15
-        The *name* parameter.
+           The *name* parameter.
     The
     """
     try:
