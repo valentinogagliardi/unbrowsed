@@ -335,7 +335,6 @@ def get_by_role(
     .. versionadded:: 0.1.0a10
     .. versionadded:: 0.1.0a15
            The *name* parameter.
-    The
     """
     try:
         result = query_by_role(dom, role, current=current, name=name)
