@@ -64,9 +64,11 @@ def test_query_by_text_multiple_matches():
     """
     dom = parse_html(html)
 
-    with pytest.raises(MultipleElementsFoundError) as excinfo:
+    with pytest.raises(MultipleElementsFoundError) as exc:
         query_by_text(dom, "Duplicate Text")
 
-    assert "Found 2 elements" in str(excinfo.value)
-    assert "Duplicate Text" in str(excinfo.value)
-    assert "query_all_by_text" in str(excinfo.value)
+    assert (
+        "Found 2 elements with text 'Duplicate Text'. "
+        "Use query_all_by_text if multiple matches are expected."
+        == str(exc.value)
+    )

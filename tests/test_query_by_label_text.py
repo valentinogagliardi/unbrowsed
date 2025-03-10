@@ -80,11 +80,14 @@ def test_query_by_label_text_multiple_matches():
     """
     dom = parse_html(html)
 
-    with pytest.raises(MultipleElementsFoundError) as excinfo:
+    with pytest.raises(MultipleElementsFoundError) as exc:
         query_by_label_text(dom, "Contact")
 
-    assert "Found 2 elements" in str(excinfo.value)
-    assert "Contact" in str(excinfo.value)
+    assert (
+        "Found 2 elements with label 'Contact'. "
+        "Use get_all_by_label_text if multiple matches are expected."
+        == str(exc.value)
+    )
 
 
 def test_query_by_label_text_no_target_id():

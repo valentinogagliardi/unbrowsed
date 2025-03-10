@@ -1,10 +1,12 @@
 """unbrowsed matchers."""
 
+from typing import Optional
 from selectolax.lexbor import LexborNode
 
 IMPLICIT_ROLES = {
     "a": lambda node: "link" if "href" in node.attributes else None,
     "button": "button",
+    "fieldset": "group",
     "img": "img",
     "input": {
         "checkbox": "checkbox",
@@ -30,14 +32,27 @@ IMPLICIT_ROLES = {
 
 
 class RoleMatcher:
-    """Matcher for ARIA roles."""
-
-    def __init__(self, target_role: str):
+    def __init__(self, target_role: str, name: Optional[str] = None):
         self.target_role = target_role.lower()
+        self.name = name
 
     def matches(self, node: LexborNode) -> bool:
         implicit_role = RoleMatcher.get_implicit_role(node)
-        return implicit_role and implicit_role.lower() == self.target_role
+
+        if not (implicit_role and implicit_role.lower() == self.target_role):
+            return False
+
+        if (
+            implicit_role == "group"
+            and node.tag == "fieldset"
+            and self.name is not None
+        ):
+            if legend := node.css_first("legend"):
+                return self.name == legend.text(deep=True, strip=True)
+            if not legend:
+                return False
+
+        return True
 
     @staticmethod
     def get_implicit_role(node: LexborNode):
