@@ -13,7 +13,7 @@ def test_get_all_by_role_returns_multiple_elements():
     <button>Button 2</button>
     """
     dom = parse_html(html)
-    
+
     buttons = get_all_by_role(dom, "button")
     assert len(buttons) == 2
 
@@ -27,7 +27,7 @@ def test_get_all_by_role_with_attributes():
 
     links_with_current = get_all_by_role(dom, "link", current=True)
     assert len(links_with_current) == 1
-    
+
     all_links = get_all_by_role(dom, "link")
     assert len(all_links) == 2
 
@@ -53,10 +53,10 @@ def test_get_all_by_role_meter():
     </div>
     """
     dom = parse_html(html)
-    
+
     meters = get_all_by_role(dom, "meter")
     assert len(meters) == 2
-    
+
     first, second = meters
     assert first.to_have_attribute("value", "100")
     assert second.to_have_attribute("value", "0")

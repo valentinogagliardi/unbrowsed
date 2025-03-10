@@ -85,7 +85,7 @@ def query_by_label_text(
 
     for label in dom.css("label"):
         label_text = label.text(deep=True, strip=True)
-        if search_text == label_text:
+        if search_text.matches(label_text):
             if target_id := label.attributes.get("for"):
                 if target := dom.css_first(f"#{target_id}"):
                     matches.append(target)
@@ -165,7 +165,7 @@ def query_by_text(dom: Parser, text: str, exact=True) -> Optional[QueryResult]:
     for element in dom.css("*"):
         element_text = element.text(deep=True, strip=True)
 
-        if element_text == search_text:
+        if search_text.matches(element_text):
             matches.append(element)
 
     if len(matches) > 1:

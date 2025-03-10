@@ -41,17 +41,18 @@ class RoleMatcher:
 
     @staticmethod
     def get_implicit_role(node: LexborNode):
+        if not hasattr(node, "tag"):
+            return
         tag = node.tag
         if not tag:
-            return None
+            return
         handler = IMPLICIT_ROLES.get(tag)
 
         if callable(handler):
             return handler(node)
         if isinstance(handler, dict):
-            if tag == "input":
-                input_type = node.attributes.get("type", "")
-                return handler.get(input_type)
+            input_type = node.attributes.get("type", "")
+            return handler.get(input_type)
         return handler if isinstance(handler, str) else None
 
 
@@ -65,9 +66,7 @@ class TextMatch:
         self.text = text.strip()
         self.exact = exact
 
-    def __eq__(self, other: object) -> bool:
-        if not isinstance(other, str):
-            return NotImplemented
+    def matches(self, other: str) -> bool:
         if not self.exact:
             return self.text.lower() in other.lower()
         return self.text == other
