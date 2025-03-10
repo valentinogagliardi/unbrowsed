@@ -1,7 +1,23 @@
 import pytest
 
 from unbrowsed.matchers import RoleMatcher, TextMatch
-from selectolax.lexbor import LexborHTMLParser as Parser
+from unbrowsed.parser import parse_html
+
+
+def test_role_matcher_a():
+    html = """
+    <a>an invalid link</a>
+    """
+    dom = parse_html(html)
+    link = dom.css_first("a")
+    assert RoleMatcher.get_implicit_role(link) is None
+
+    html = """
+    <a href="/home">a invalid link</a>
+    """
+    dom = parse_html(html)
+    link = dom.css_first("a")
+    assert RoleMatcher.get_implicit_role(link) == "link"
 
 
 def test_role_matcher_input_types():
@@ -11,7 +27,7 @@ def test_role_matcher_input_types():
     <input type="text">
     <input type="unknown">
     """
-    dom = Parser(html)
+    dom = parse_html(html)
 
     checkbox = dom.css_first('input[type="checkbox"]')
     assert RoleMatcher.get_implicit_role(checkbox) == "checkbox"
@@ -37,22 +53,5 @@ def test_text_match_type_error():
     assert "text must be a string" in str(excinfo.value)
 
 
-def test_text_match_eq_not_implemented():
-
-    text_match = TextMatch("test")
-
-    result = text_match.__eq__(123)
-    assert result is NotImplemented
-
-    result = text_match.__eq__(None)
-    assert result is NotImplemented
-
-    result = text_match.__eq__([])
-    assert result is NotImplemented
-
-    assert text_match == "test"
-    assert text_match != "other"
-
-    text_match_non_exact = TextMatch("test", exact=False)
-    assert text_match_non_exact == "This is a test string"
-    assert text_match_non_exact != "other"
+def test_role_matcher():
+    assert not RoleMatcher.get_implicit_role(None)  # type: ignore

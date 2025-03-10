@@ -89,3 +89,28 @@ unbrowsed provides assertion helpers for testing element properties:
     link = get_by_text(dom, "Visit Example")
     assert link.to_have_attribute("href", "https://example.com")
     assert link.to_have_attribute("class", "link")
+
+
+Usage with Django
+-----------------
+
+unbrowsed can be used in Django to test the HTML returned from responses:
+
+.. code-block:: python
+
+    from django.test import TestCase
+    from unbrowsed import parse_html, get_by_label_text
+
+
+    class TestBookCreateView(TestCase):
+        def test_form_labels(self):
+            response = self.client.get("/books/create/")
+            dom = parse_html(response.content)
+
+            expected_labels = [
+                "Insert the book title",
+                "Select the book authors",
+            ]
+
+            for label in expected_labels:
+                get_by_label_text(dom, label)
