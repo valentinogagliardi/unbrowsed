@@ -7,14 +7,18 @@ from unbrowsed.exceptions import (
 
 
 def test_no_elements_found_serialization():
-    e = NoElementsFoundError(text="the text", alt_method="query_by_label_text")
+    e = NoElementsFoundError(
+        "No elements found with 'the text'. "
+        "Use query_by_label_text if expecting no matches."
+    )
     serialized = pickle.dumps(e)
     pickle.loads(serialized)
 
 
 def test_multiple_elements_found_serialization():
     e = MultipleElementsFoundError(
-        text="the text", alt_method="query_by_label_text", count=1
+        "Found 1 elements with 'the text'. "
+        "Use query_by_label_text if multiple matches are expected."
     )
     serialized = pickle.dumps(e)
     pickle.loads(serialized)

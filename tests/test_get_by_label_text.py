@@ -23,9 +23,12 @@ def test_get_by_label_text(labels_html):
 
     assert get_by_label_text(dom, "Email")
 
-    with pytest.raises(NoElementsFoundError) as excinfo:
+    with pytest.raises(NoElementsFoundError) as exc:
         get_by_label_text(dom, "email")
-    assert "No elements found" in str(excinfo.value)
+    assert (
+        "No elements found with label 'email'. "
+        "Use query_by_label_text if expecting no matches." == str(exc.value)
+    )
 
     assert get_by_label_text(dom, "Password")
 
@@ -55,11 +58,13 @@ def test_get_by_label_text_no_match():
     """
     dom = parse_html(html)
 
-    with pytest.raises(NoElementsFoundError) as excinfo:
+    with pytest.raises(NoElementsFoundError) as exc:
         get_by_label_text(dom, "Phone")
 
-    assert "No elements found" in str(excinfo.value)
-    assert "Phone" in str(excinfo.value)
+    assert (
+        "No elements found with label 'Phone'. "
+        "Use query_by_label_text if expecting no matches." == str(exc.value)
+    )
 
 
 def test_get_by_label_text_multiple_matches():
@@ -71,11 +76,14 @@ def test_get_by_label_text_multiple_matches():
     """
     dom = parse_html(html)
 
-    with pytest.raises(MultipleElementsFoundError) as excinfo:
+    with pytest.raises(MultipleElementsFoundError) as exc:
         get_by_label_text(dom, "Contact")
 
-    assert "Found 2 elements" in str(excinfo.value)
-    assert "Contact" in str(excinfo.value)
+    assert (
+        "Found 2 elements with label 'Contact'. "
+        "Use get_all_by_label_text if multiple matches are expected."
+        == str(exc.value)
+    )
 
 
 def test_get_by_label_text_nested_control():

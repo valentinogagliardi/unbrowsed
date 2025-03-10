@@ -39,10 +39,12 @@ def test_get_all_by_role_no_match():
     """
     dom = parse_html(html)
 
-    with pytest.raises(NoElementsFoundError) as excinfo:
+    with pytest.raises(NoElementsFoundError) as exc:
         get_all_by_role(dom, "button")
-    assert "No elements found with 'button'" in str(excinfo.value)
-    assert "query_all_by_role" in str(excinfo.value)
+    assert (
+        "No elements found with role 'button'. "
+        "Use query_all_by_role if expecting no matches." == str(exc.value)
+    )
 
 
 def test_get_all_by_role_meter():

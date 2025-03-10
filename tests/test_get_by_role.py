@@ -81,11 +81,13 @@ def test_get_by_role_multiple_matches():
     """
     dom = parse_html(html)
 
-    with pytest.raises(MultipleElementsFoundError) as excinfo:
+    with pytest.raises(MultipleElementsFoundError) as exc:
         get_by_role(dom, "button")
-    assert "Found 2 elements" in str(excinfo.value)
-    assert "button" in str(excinfo.value)
-    assert "get_all_by_role" in str(excinfo.value)
+    assert (
+        "Found 2 elements with role 'button'. "
+        "Use get_all_by_role if multiple matches are expected."
+        == str(exc.value)
+    )
 
 
 def test_get_by_role_prioritize_child():

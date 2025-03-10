@@ -95,7 +95,8 @@ def query_by_label_text(
 
     if len(matches) > 1:
         raise MultipleElementsFoundError(
-            text, len(matches), alt_method="get_all_by_label_text"
+            f"Found {len(matches)} elements with label '{text}'. "
+            f"Use get_all_by_label_text if multiple matches are expected."
         )
 
     if not matches:
@@ -131,11 +132,16 @@ def get_by_label_text(dom: Parser, text: str, exact=True) -> QueryResult:
     try:
         result = query_by_label_text(dom, text, exact)
         if not result:
-            raise NoElementsFoundError(text, alt_method="query_by_label_text")
+            raise NoElementsFoundError(
+                f"No elements found with label '{text}'. "
+                f"Use query_by_label_text if expecting no matches."
+            )
         return result
     except MultipleElementsFoundError as e:
+        count = e.message.split()[1]
         raise MultipleElementsFoundError(
-            text, e.args[0].split()[1], alt_method="get_all_by_label_text"
+            f"Found {count} elements with label '{text}'. "
+            f"Use get_all_by_label_text if multiple matches are expected."
         )
 
 
@@ -182,7 +188,8 @@ def query_by_text(dom: Parser, text: str, exact=True) -> Optional[QueryResult]:
                         return QueryResult(matches[i])
 
             raise MultipleElementsFoundError(
-                text, len(matches), alt_method="query_all_by_text"
+                f"Found {len(matches)} elements with text '{text}'. "
+                f"Use query_all_by_text if multiple matches are expected."
             )
 
     if not matches:
@@ -218,11 +225,16 @@ def get_by_text(dom: Parser, text: str, exact=True) -> QueryResult:
     try:
         result = query_by_text(dom, text, exact=exact)
         if not result:
-            raise NoElementsFoundError(text, alt_method="query_by_text")
+            raise NoElementsFoundError(
+                f"No elements found with '{text}'. "
+                f"Use query_by_text if expecting no matches."
+            )
         return result
     except MultipleElementsFoundError as e:
+        count = e.message.split()[1]
         raise MultipleElementsFoundError(
-            text, e.args[0].split()[1], alt_method="get_all_by_text"
+            f"Found {count} elements with text '{text}'. "
+            f"Use get_all_by_text if multiple matches are expected."
         )
 
 
@@ -282,7 +294,8 @@ def query_by_role(
                         return QueryResult(child)
 
             raise MultipleElementsFoundError(
-                role, len(matches), alt_method="query_all_by_role"
+                f"Found {len(matches)} elements with role '{role}'. "
+                f"Use query_all_by_role if multiple matches are expected."
             )
 
     if not matches:
@@ -327,11 +340,16 @@ def get_by_role(
     try:
         result = query_by_role(dom, role, current=current, name=name)
         if not result:
-            raise NoElementsFoundError(role, alt_method="query_by_role")
+            raise NoElementsFoundError(
+                f"No elements found with '{role}'. "
+                f"Use query_by_role if expecting no matches."
+            )
         return result
     except MultipleElementsFoundError as e:
+        count = e.message.split()[1]
         raise MultipleElementsFoundError(
-            role, e.args[0].split()[1], alt_method="get_all_by_role"
+            f"Found {count} elements with role '{role}'. "
+            f"Use get_all_by_role if multiple matches are expected."
         )
 
 
@@ -395,5 +413,8 @@ def get_all_by_role(
     """
     results = query_all_by_role(dom, role, current=current)
     if not results:
-        raise NoElementsFoundError(role, alt_method="query_all_by_role")
+        raise NoElementsFoundError(
+            f"No elements found with role '{role}'. "
+            f"Use query_all_by_role if expecting no matches."
+        )
     return results
