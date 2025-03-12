@@ -17,6 +17,8 @@ IMPLICIT_ROLES = {
         "radio": "radio",
         "text": "textbox",
         "search": "searchbox",
+        "button": "button",
+        "password": "textbox",
     },
     "textarea": "textbox",
     "select": "combobox",

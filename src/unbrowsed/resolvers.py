@@ -25,8 +25,9 @@ class AccessibleNameResolver:
                 return " ".join(name_texts)
 
         if aria_label := node.attributes.get("aria-label"):
-            if aria_label.strip():
-                return aria_label.strip()
+            aria_label = aria_label.strip()
+            if aria_label:
+                return aria_label
 
         if node.tag == "fieldset":
             if legend := node.css_first("legend"):
