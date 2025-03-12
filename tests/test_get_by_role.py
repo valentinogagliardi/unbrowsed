@@ -222,6 +222,18 @@ def test_get_by_role_accessible_name():
     html = """
     <html>
     <body>
+    <button aria-label="Blue" aria-labelledby="color color-1">Red</button>
+    <span id="color">Yellow</span>
+    <span id="color-1">Red</span>
+    </body>
+    </html>
+    """
+    dom = parse_html(html)
+    assert get_by_role(dom, "button", name="Yellow Red")
+
+    html = """
+    <html>
+    <body>
     <button aria-label="Blue" aria-labelledby="color">Red</button>
     <span id="color">Yellow</span>
     </body>
@@ -288,3 +300,51 @@ def test_get_by_role_accessible_name():
     dom = parse_html(html)
     assert get_by_role(dom, "textbox", name="The name")
     assert get_by_role(dom, "textbox", name="The surname")
+
+
+def test_get_by_role_aria_labelledby_multiple_refs():
+    html = """
+    <html>
+    <body>
+        <div role="alert"
+        aria-labelledby="title description note missing empty">
+        Alert content</div>
+        <h2 id="title">Important Notice</h2>
+        <p id="description">Your account has been updated</p>
+        <span id="note">Please</span>
+        <div id="empty"></div>
+    </body>
+    </html>
+    """
+    dom = parse_html(html)
+    assert get_by_role(
+        dom,
+        "alert",
+        name="Important Notice Your account has been updated Please",
+    )
+
+    html = """
+    <html>
+    <body>
+        <button aria-labelledby="first second third">Button text</button>
+        <span id="first">Hello</span>
+        <!-- second ID doesn't exist -->
+        <div id="third">World</div>
+    </body>
+    </html>
+    """
+    dom = parse_html(html)
+    assert get_by_role(dom, "button", name="Hello World")
+
+    html = """
+    <html>
+    <body>
+        <input type="text" aria-labelledby="label3 label1 label2" />
+        <span id="label1">Middle</span>
+        <span id="label2">Last</span>
+        <span id="label3">First</span>
+    </body>
+    </html>
+    """
+    dom = parse_html(html)
+    assert get_by_role(dom, "textbox", name="First Middle Last")
