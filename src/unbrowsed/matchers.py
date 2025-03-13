@@ -7,6 +7,33 @@ from unbrowsed.resolvers import (
     AccessibleDescriptionResolver,
 )
 
+
+def get_td_role(node: LexborNode) -> Optional[str]:
+    """
+    Determine the role of a td element based on its ancestor table element.
+    """
+
+    ancestor = node.parent
+    while ancestor and ancestor.tag != "table":
+        ancestor = ancestor.parent
+
+    if not ancestor:
+        return None
+
+    table_role = ancestor.attributes.get("role")
+
+    if not table_role:
+        return "cell"
+
+    table_role = table_role.lower()
+    if table_role == "table":
+        return "cell"
+    elif table_role in ["grid", "treegrid"]:
+        return "gridcell"
+
+    return None
+
+
 IMPLICIT_ROLES = {
     "a": lambda node: "link" if "href" in node.attributes else None,
     "button": "button",
@@ -35,6 +62,7 @@ IMPLICIT_ROLES = {
     "h6": "heading",
     "ul": "list",
     "ol": "list",
+    "td": get_td_role,
 }
 
 

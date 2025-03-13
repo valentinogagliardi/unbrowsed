@@ -355,3 +355,76 @@ def test_get_by_role_aria_labelledby_multiple_refs():
     """
     dom = parse_html(html)
     assert get_by_role(dom, "textbox", name="First Middle Last")
+
+
+def test_get_by_role_cell():
+    html = """
+    <table role="table">
+      <tbody>
+      <tr>
+        <td aria-label="Activation with identifier 8">
+          ID: 8
+        </td>
+      </tr>
+      </tbody>
+    </table>
+    """
+    dom = parse_html(html)
+    get_by_role(dom, "cell", name="Activation with identifier 8")
+
+    html = """
+    <table>
+      <tbody>
+      <tr>
+        <td aria-label="Activation with identifier 8">
+          ID: 8
+        </td>
+      </tr>
+      </tbody>
+    </table>
+    """
+    dom = parse_html(html)
+    get_by_role(dom, "cell", name="Activation with identifier 8")
+
+    html = """
+    <table role="grid">
+      <tbody>
+      <tr>
+        <td aria-label="Activation with identifier 8">
+          ID: 8
+        </td>
+      </tr>
+      </tbody>
+    </table>
+    """
+    dom = parse_html(html)
+    get_by_role(dom, "gridcell", name="Activation with identifier 8")
+
+    html = """
+    <table role="treegrid">
+      <tbody>
+      <tr>
+        <td aria-label="Activation with identifier 8">
+          ID: 8
+        </td>
+      </tr>
+      </tbody>
+    </table>
+    """
+    dom = parse_html(html)
+    get_by_role(dom, "gridcell", name="Activation with identifier 8")
+
+    html = """
+    <table role="presentation">
+      <tbody>
+        <tr>
+          <td>No role cell content</td>
+        </tr>
+      </tbody>
+    </table>
+    """
+    dom = parse_html(html)
+    with pytest.raises(NoElementsFoundError):
+        get_by_role(dom, "cell")
+    with pytest.raises(NoElementsFoundError):
+        get_by_role(dom, "gridcell")
