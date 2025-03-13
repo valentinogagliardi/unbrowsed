@@ -220,6 +220,13 @@ def test_get_by_role_accessible_name():
     assert get_by_role(dom, "textbox", name="The name")
 
     html = """
+      <button aria-label="Blue" aria-labelledby="color">Red</button>
+      <span id="color">Yellow</span>
+    """
+    dom = parse_html(html)
+    assert get_by_role(dom, "button", name="Yellow")
+
+    html = """
     <html>
     <body>
     <button aria-label="Blue" aria-labelledby="color color-1">Red</button>

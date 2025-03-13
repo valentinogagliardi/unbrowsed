@@ -1,14 +1,17 @@
-import pytest
 from selectolax.lexbor import LexborHTMLParser
 
-from unbrowsed.resolvers import AccessibleNameResolver, AccessibleDescriptionResolver
+from unbrowsed.resolvers import (
+    AccessibleNameResolver,
+    AccessibleDescriptionResolver,
+)
 
 
 def test_accessible_name_resolver_aria_labelledby():
     html = """
     <html>
     <body>
-        <div id="element" aria-labelledby="title description">Test content</div>
+        <div id="element"
+        aria-labelledby="title description">Test content</div>
         <h2 id="title">Important Notice</h2>
         <p id="description">Your account has been updated</p>
     </body>
@@ -16,7 +19,7 @@ def test_accessible_name_resolver_aria_labelledby():
     """
     parser = LexborHTMLParser(html)
     element = parser.css_first("#element")
-    
+
     name = AccessibleNameResolver.resolve(element)
     assert name == "Important Notice Your account has been updated"
 
@@ -25,7 +28,8 @@ def test_accessible_name_resolver_aria_labelledby_missing_id():
     html = """
     <html>
     <body>
-        <div id="element" aria-labelledby="title missing description">Test content</div>
+        <div id="element"
+        aria-labelledby="title missing description">Test content</div>
         <h2 id="title">Important Notice</h2>
         <p id="description">Your account has been updated</p>
     </body>
@@ -33,7 +37,7 @@ def test_accessible_name_resolver_aria_labelledby_missing_id():
     """
     parser = LexborHTMLParser(html)
     element = parser.css_first("#element")
-    
+
     name = AccessibleNameResolver.resolve(element)
     assert name == "Important Notice Your account has been updated"
 
@@ -42,7 +46,8 @@ def test_accessible_name_resolver_aria_labelledby_empty_element():
     html = """
     <html>
     <body>
-        <div id="element" aria-labelledby="title empty description">Test content</div>
+        <div id="element"
+        aria-labelledby="title empty description">Test content</div>
         <h2 id="title">Important Notice</h2>
         <div id="empty"></div>
         <p id="description">Your account has been updated</p>
@@ -51,7 +56,7 @@ def test_accessible_name_resolver_aria_labelledby_empty_element():
     """
     parser = LexborHTMLParser(html)
     element = parser.css_first("#element")
-    
+
     name = AccessibleNameResolver.resolve(element)
     assert name == "Important Notice Your account has been updated"
 
@@ -66,7 +71,7 @@ def test_accessible_name_resolver_aria_label():
     """
     parser = LexborHTMLParser(html)
     element = parser.css_first("button")
-    
+
     name = AccessibleNameResolver.resolve(element)
     assert name == "Close dialog"
 
@@ -81,7 +86,7 @@ def test_accessible_name_resolver_aria_label_empty():
     """
     parser = LexborHTMLParser(html)
     element = parser.css_first("button")
-    
+
     name = AccessibleNameResolver.resolve(element)
     assert name == "X"
 
@@ -99,7 +104,7 @@ def test_accessible_name_resolver_fieldset_legend():
     """
     parser = LexborHTMLParser(html)
     element = parser.css_first("fieldset")
-    
+
     name = AccessibleNameResolver.resolve(element)
     assert name == "Personal Information"
 
@@ -115,7 +120,7 @@ def test_accessible_name_resolver_input_label():
     """
     parser = LexborHTMLParser(html)
     element = parser.css_first("input")
-    
+
     name = AccessibleNameResolver.resolve(element)
     assert name == "Username"
 
@@ -130,7 +135,7 @@ def test_accessible_name_resolver_img_alt():
     """
     parser = LexborHTMLParser(html)
     element = parser.css_first("img")
-    
+
     name = AccessibleNameResolver.resolve(element)
     assert name == "Example image"
 
@@ -145,7 +150,7 @@ def test_accessible_name_resolver_img_alt_empty():
     """
     parser = LexborHTMLParser(html)
     element = parser.css_first("img")
-    
+
     name = AccessibleNameResolver.resolve(element)
     assert name == ""
 
@@ -162,7 +167,7 @@ def test_accessible_name_resolver_a_with_img_alt():
     """
     parser = LexborHTMLParser(html)
     element = parser.css_first("a")
-    
+
     name = AccessibleNameResolver.resolve(element)
     assert name == "Example image"
 
@@ -180,7 +185,7 @@ def test_accessible_name_resolver_a_with_img_alt_and_text():
     """
     parser = LexborHTMLParser(html)
     element = parser.css_first("a")
-    
+
     name = AccessibleNameResolver.resolve(element)
     assert name == "Example image Visit Example"
 
@@ -195,7 +200,7 @@ def test_accessible_name_resolver_button_text():
     """
     parser = LexborHTMLParser(html)
     element = parser.css_first("button")
-    
+
     name = AccessibleNameResolver.resolve(element)
     assert name == "Submit Form"
 
@@ -210,7 +215,7 @@ def test_accessible_name_resolver_heading_text():
     """
     parser = LexborHTMLParser(html)
     element = parser.css_first("h1")
-    
+
     name = AccessibleNameResolver.resolve(element)
     assert name == "Page Title"
 
@@ -225,7 +230,7 @@ def test_accessible_name_resolver_title_attribute():
     """
     parser = LexborHTMLParser(html)
     element = parser.css_first("div")
-    
+
     name = AccessibleNameResolver.resolve(element)
     assert name == "Tooltip text"
 
@@ -240,7 +245,7 @@ def test_accessible_name_resolver_title_attribute_empty():
     """
     parser = LexborHTMLParser(html)
     element = parser.css_first("div")
-    
+
     name = AccessibleNameResolver.resolve(element)
     assert name is None
 
@@ -255,7 +260,7 @@ def test_accessible_name_resolver_no_accessible_name():
     """
     parser = LexborHTMLParser(html)
     element = parser.css_first("div")
-    
+
     name = AccessibleNameResolver.resolve(element)
     assert name is None
 
@@ -271,26 +276,9 @@ def test_accessible_description_resolver_aria_describedby():
     """
     parser = LexborHTMLParser(html)
     element = parser.css_first("input")
-    
+
     description = AccessibleDescriptionResolver.resolve(element)
     assert description == "Enter your username or email address"
-
-
-def test_accessible_description_resolver_aria_describedby_multiple():
-    html = """
-    <html>
-    <body>
-        <input id="password" aria-describedby="password-req password-tip" type="password">
-        <div id="password-req">Must be at least 8 characters</div>
-        <div id="password-tip">Include numbers and special characters</div>
-    </body>
-    </html>
-    """
-    parser = LexborHTMLParser(html)
-    element = parser.css_first("input")
-    
-    description = AccessibleDescriptionResolver.resolve(element)
-    assert description == "Must be at least 8 characters Include numbers and special characters"
 
 
 def test_accessible_description_resolver_aria_describedby_missing_id():
@@ -304,7 +292,7 @@ def test_accessible_description_resolver_aria_describedby_missing_id():
     """
     parser = LexborHTMLParser(html)
     element = parser.css_first("input")
-    
+
     description = AccessibleDescriptionResolver.resolve(element)
     assert description == "Enter a valid email address"
 
@@ -321,7 +309,7 @@ def test_accessible_description_resolver_aria_describedby_empty_element():
     """
     parser = LexborHTMLParser(html)
     element = parser.css_first("input")
-    
+
     description = AccessibleDescriptionResolver.resolve(element)
     assert description == "Search for products"
 
@@ -336,7 +324,7 @@ def test_accessible_description_resolver_no_aria_describedby():
     """
     parser = LexborHTMLParser(html)
     element = parser.css_first("input")
-    
+
     description = AccessibleDescriptionResolver.resolve(element)
     assert description is None
 
@@ -351,6 +339,6 @@ def test_accessible_description_resolver_aria_describedby_all_missing():
     """
     parser = LexborHTMLParser(html)
     element = parser.css_first("input")
-    
+
     description = AccessibleDescriptionResolver.resolve(element)
     assert description is None

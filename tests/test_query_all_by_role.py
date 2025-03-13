@@ -19,7 +19,7 @@ def test_query_all_by_role_basic():
     </html>
     """
     dom = parse_html(html)
-    
+
     results = query_all_by_role(dom, "button")
     assert len(results) == 3
 
@@ -35,13 +35,12 @@ def test_query_all_by_role_with_current():
     </html>
     """
     dom = parse_html(html)
-    
+
     results = query_all_by_role(dom, "link", current=True)
     assert len(results) == 2
-    
+
     results = query_all_by_role(dom, "link", current=False)
     assert len(results) == 1
-    
 
 
 def test_query_all_by_role_no_matches():
@@ -54,7 +53,7 @@ def test_query_all_by_role_no_matches():
     </html>
     """
     dom = parse_html(html)
-    
+
     results = query_all_by_role(dom, "button")
     assert len(results) == 0
 
@@ -70,10 +69,9 @@ def test_query_all_by_role_mixed_elements():
     </html>
     """
     dom = parse_html(html)
-    
+
     results = query_all_by_role(dom, "button")
     assert len(results) == 3
-    
 
 
 def test_get_all_by_role_basic():
@@ -86,7 +84,7 @@ def test_get_all_by_role_basic():
     </html>
     """
     dom = parse_html(html)
-    
+
     results = get_all_by_role(dom, "button")
     assert len(results) == 2
 
@@ -101,14 +99,13 @@ def test_get_all_by_role_no_matches():
     </html>
     """
     dom = parse_html(html)
-    
+
     with pytest.raises(NoElementsFoundError) as exc:
         get_all_by_role(dom, "button")
-    
+
     assert (
         "No elements found with role 'button'. "
-        "Use query_all_by_role if expecting no matches."
-        == str(exc.value)
+        "Use query_all_by_role if expecting no matches." == str(exc.value)
     )
 
 
@@ -123,9 +120,9 @@ def test_get_all_by_role_with_current():
     </html>
     """
     dom = parse_html(html)
-    
+
     results = get_all_by_role(dom, "link", current=True)
     assert len(results) == 2
-    
+
     with pytest.raises(NoElementsFoundError):
         get_all_by_role(dom, "button", current=True)
