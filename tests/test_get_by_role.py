@@ -168,3 +168,190 @@ def test_by_role_group():
     dom = parse_html(html)
     with pytest.raises(NoElementsFoundError):
         get_by_role(dom, "group", name="Choose your favorite monster")
+
+
+def test_get_by_role_accessible_description():
+    html = """
+    <div>
+        <label for="id_name">The name</label>
+      <div>
+          <input type="text" name="name"
+          aria-describedby="id_name_errorlist" id="id_name">
+      </div>
+      <ul id="id_name_errorlist" class="errorlist">
+        <li class="error">This field is required.</li>
+      </ul>
+      </div>
+    """
+    dom = parse_html(html)
+    assert get_by_role(dom, "textbox", description="This field is required.")
+
+    html = """
+    <div>
+        <label for="id_name">The name</label>
+      <div>
+          <input type="text" name="name"
+          aria-describedby="id_name_errorlist" id="id_name">
+      </div>
+      <ul id="id_name_errorlist" class="errorlist">
+        <li class="error">This field is required.</li>
+      </ul>
+      </div>
+    """
+    dom = parse_html(html)
+    with pytest.raises(NoElementsFoundError):
+        get_by_role(dom, "textbox", description="not there")
+
+
+def test_get_by_role_accessible_name():
+    html = """
+    <div>
+        <label for="id_name">The name</label>
+      <div>
+          <input type="text" name="name"
+          aria-describedby="id_name_errorlist" id="id_name">
+      </div>
+      <ul id="id_name_errorlist" class="errorlist">
+        <li class="error">This field is required.</li>
+      </ul>
+      </div>
+    """
+    dom = parse_html(html)
+    assert get_by_role(dom, "textbox", name="The name")
+
+    html = """
+      <button aria-label="Blue" aria-labelledby="color">Red</button>
+      <span id="color">Yellow</span>
+    """
+    dom = parse_html(html)
+    assert get_by_role(dom, "button", name="Yellow")
+
+    html = """
+    <html>
+    <body>
+    <button aria-label="Blue" aria-labelledby="color color-1">Red</button>
+    <span id="color">Yellow</span>
+    <span id="color-1">Red</span>
+    </body>
+    </html>
+    """
+    dom = parse_html(html)
+    assert get_by_role(dom, "button", name="Yellow Red")
+
+    html = """
+    <html>
+    <body>
+    <button aria-label="Blue" aria-labelledby="color">Red</button>
+    <span id="color">Yellow</span>
+    </body>
+    </html>
+    """
+    dom = parse_html(html)
+    assert get_by_role(dom, "button", name="Yellow")
+
+    html = """
+      <a role="button" aria-label="Close popup" href="#close">
+      <span aria-hidden="true">×</span></a>
+    """
+    dom = parse_html(html)
+    assert get_by_role(dom, "button", name="Close popup")
+
+    html = '<img src="tequila.png" alt="Chamukos tequila">'
+    dom = parse_html(html)
+    assert get_by_role(dom, "img", name="Chamukos tequila")
+
+    html = """
+    <a href="tequila.html">
+      <img src="tequila.png" alt="Chamukos tequila">
+    </a>'
+    """
+    dom = parse_html(html)
+    assert get_by_role(dom, "link", name="Chamukos tequila")
+
+    html = """
+    <a href="tequila.html">
+      <img src="tequila.png" alt="Chamukos tequila"> £40
+    </a>
+    """
+    dom = parse_html(html)
+    assert get_by_role(dom, "link", name="Chamukos tequila £40")
+
+    html = """
+    <button aria-label="Add Chamukos tequila to cart">Add to cart</button>
+    """
+    dom = parse_html(html)
+    assert get_by_role(dom, "button", name="Add Chamukos tequila to cart")
+
+    html = """
+    <input type="search" aria-labelledby="this">
+    <button id="this">Search</button>
+    """
+    dom = parse_html(html)
+    assert get_by_role(dom, "searchbox", name="Search")
+
+    html = """
+        <label for="id_name">The name</label>
+        <input type="text" name="name" id="id_name">
+        <label for="id_surname">The surname</label>
+        <input type="text" name="surname" id="id_surname">
+    """
+    dom = parse_html(html)
+    assert get_by_role(dom, "textbox", name="The name")
+
+    html = """
+        <label for="id_name">The name</label>
+        <input type="text" name="name" id="id_name">
+        <label for="id_surname">The surname</label>
+        <input type="text" name="surname" id="id_surname">
+    """
+    dom = parse_html(html)
+    assert get_by_role(dom, "textbox", name="The name")
+    assert get_by_role(dom, "textbox", name="The surname")
+
+
+def test_get_by_role_aria_labelledby_multiple_refs():
+    html = """
+    <html>
+    <body>
+        <div role="alert"
+        aria-labelledby="title description note missing empty">
+        Alert content</div>
+        <h2 id="title">Important Notice</h2>
+        <p id="description">Your account has been updated</p>
+        <span id="note">Please</span>
+        <div id="empty"></div>
+    </body>
+    </html>
+    """
+    dom = parse_html(html)
+    assert get_by_role(
+        dom,
+        "alert",
+        name="Important Notice Your account has been updated Please",
+    )
+
+    html = """
+    <html>
+    <body>
+        <button aria-labelledby="first second third">Button text</button>
+        <span id="first">Hello</span>
+        <!-- second ID doesn't exist -->
+        <div id="third">World</div>
+    </body>
+    </html>
+    """
+    dom = parse_html(html)
+    assert get_by_role(dom, "button", name="Hello World")
+
+    html = """
+    <html>
+    <body>
+        <input type="text" aria-labelledby="label3 label1 label2" />
+        <span id="label1">Middle</span>
+        <span id="label2">Last</span>
+        <span id="label3">First</span>
+    </body>
+    </html>
+    """
+    dom = parse_html(html)
+    assert get_by_role(dom, "textbox", name="First Middle Last")

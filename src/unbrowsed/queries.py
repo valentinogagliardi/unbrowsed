@@ -243,6 +243,7 @@ def query_by_role(
     role: str,
     current: Optional[Union[bool, str]] = None,
     name: Optional[str] = None,
+    description: Optional[str] = None,
 ) -> Optional[QueryResult]:
     """
     Queries the DOM for an element with the specified ARIA role.
@@ -253,6 +254,7 @@ def query_by_role(
         current: The value to check for aria-current attribute.
                  Can be a boolean or string "true".
         name: The accessible name of the element.
+        description: The accessible description of the element.
 
     Returns:
         A QueryResult containing the matched element.
@@ -264,8 +266,12 @@ def query_by_role(
     .. versionadded:: 0.1.0a10
     .. versionadded:: 0.1.0a15
            The *name* parameter.
+    .. versionadded:: 0.1.0a16
+           The *description* parameter.
     """
-    role_matcher = RoleMatcher(target_role=role, name=name)
+    role_matcher = RoleMatcher(
+        target_role=role, name=name, description=description
+    )
     matches = []
 
     for element in dom.css("*"):
@@ -309,6 +315,7 @@ def get_by_role(
     role: str,
     current: Optional[Union[bool, str]] = None,
     name: Optional[str] = None,
+    description: Optional[str] = None,
 ) -> QueryResult:
     """
     Retrieves an element from the DOM by its ARIA role.
@@ -322,6 +329,7 @@ def get_by_role(
         current: The value to check for aria-current attribute.
                  Can be a boolean or string "true".
         name: The accessible name of the element.
+        description: The accessible description of the element.
 
     Returns:
         A QueryResult containing the matched element and context description.
@@ -337,7 +345,9 @@ def get_by_role(
            The *name* parameter.
     """
     try:
-        result = query_by_role(dom, role, current=current, name=name)
+        result = query_by_role(
+            dom, role, current=current, name=name, description=description
+        )
         if not result:
             raise NoElementsFoundError(
                 f"No elements found with '{role}'. "
