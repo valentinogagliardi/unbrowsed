@@ -8,6 +8,47 @@ from unbrowsed import (
 )
 
 
+def test_get_by_role_address():
+    html = """
+        <address>
+          <a href="mailto:jim@example.com">jim@example.com</a><br />
+          <a href="tel:+14155550132">+1 (415) 555‑0132</a>
+        </address>
+    """
+    dom = parse_html(html)
+    get_by_role(dom, "group")
+
+
+def test_get_by_role_form():
+    html = """
+    <html lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Django Accessible Forms</title>
+      </head>
+      <body>
+        <form class="" method="post" novalidate="">
+          <div class="form-group">
+            <label for="id_title">Title (required):</label>
+            <div class="helptext" id="id_title_helptext">
+              Enter the title of the book.
+            </div>
+            <input type="text" name="title" maxlength="200"
+                  aria-describedby="id_title_errorlist id_title_helptext"
+                  aria-invalid="false" required="" id="id_title">
+            <ul id="id_title_errorlist" class="errorlist">
+                <li>This field is required.</li>
+            </ul>
+          </div>
+        </form>
+      </body>
+    </html>
+    """
+    dom = parse_html(html)
+    assert get_by_role(dom, "form").to_have_attribute("novalidate")
+
+
 def test_get_by_role_link():
     html = """
     <a href="https://example.com">Example Link</a>
@@ -22,7 +63,7 @@ def test_get_by_role_link():
     </a>
     """
     dom = parse_html(html)
-    assert get_by_role(dom, "link", current=True)
+    get_by_role(dom, "link", current=True)
 
     html = """
     <a href="#anchor" aria-current="true">
@@ -30,7 +71,7 @@ def test_get_by_role_link():
     </a>
     """
     dom = parse_html(html)
-    assert get_by_role(dom, "link", current="true")
+    get_by_role(dom, "link", current="true")
 
     html = """
     <a href="#anchor" aria-current="page">
@@ -38,7 +79,7 @@ def test_get_by_role_link():
     </a>
     """
     dom = parse_html(html)
-    assert get_by_role(dom, "link", current="page")
+    get_by_role(dom, "link", current="page")
 
 
 def test_get_by_role_button():
@@ -48,7 +89,29 @@ def test_get_by_role_button():
     """
     dom = parse_html(html)
 
-    assert get_by_role(dom, "button")
+    get_by_role(dom, "button")
+
+
+def test_get_by_role_generic():
+    html = """
+    <a>Example Link</a>
+    <button>Button</button>
+    """
+    dom = parse_html(html)
+    get_by_role(dom, "generic")
+
+    html = """
+        <p>
+          The two most popular science
+          courses offered by the school are
+          (the study of chemicals and the composition of
+          substances) and <b class="term">physics</b>
+          (the study of the nature and
+          properties of matter and energy).
+        </p>
+    """
+    dom = parse_html(html)
+    get_by_role(dom, "generic")
 
 
 def test_get_by_role_with_attributes():
@@ -58,9 +121,8 @@ def test_get_by_role_with_attributes():
     """
     dom = parse_html(html)
 
-    assert get_by_role(dom, "link", current="true")
-
-    assert get_by_role(dom, "link", current=True)
+    get_by_role(dom, "link", current="true")
+    get_by_role(dom, "link", current=True)
 
 
 def test_get_by_role_no_match():
@@ -98,8 +160,7 @@ def test_get_by_role_prioritize_child():
     """
     dom = parse_html(html)
 
-    link = get_by_role(dom, "link")
-    assert link.element.tag == "a"
+    get_by_role(dom, "link")
 
 
 def test_by_role_input():
@@ -107,19 +168,19 @@ def test_by_role_input():
     <input type="checkbox">
     """
     dom = parse_html(html)
-    assert get_by_role(dom, "checkbox")
+    get_by_role(dom, "checkbox")
 
     html = """
     <input type="radio">
     """
     dom = parse_html(html)
-    assert get_by_role(dom, "radio")
+    get_by_role(dom, "radio")
 
     html = """
     <input type="text">
     """
     dom = parse_html(html)
-    assert get_by_role(dom, "textbox")
+    get_by_role(dom, "textbox")
 
 
 def test_by_role_meter():
@@ -127,7 +188,7 @@ def test_by_role_meter():
         <td><meter value="100">100%</meter></td>
         """
     dom = parse_html(html)
-    assert get_by_role(dom, "meter").to_have_attribute("value", "100")
+    get_by_role(dom, "meter").to_have_attribute("value", "100")
 
 
 def test_by_role_group():
@@ -148,8 +209,8 @@ def test_by_role_group():
     </form>
     """
     dom = parse_html(html)
-    assert get_by_role(dom, "group").to_have_attribute("name", "the name")
-    assert get_by_role(dom, "group", name="Choose your favorite monster")
+    get_by_role(dom, "group").to_have_attribute("name", "the name")
+    get_by_role(dom, "group", name="Choose your favorite monster")
 
     html = """
     <form>
@@ -184,7 +245,7 @@ def test_get_by_role_accessible_description():
       </div>
     """
     dom = parse_html(html)
-    assert get_by_role(dom, "textbox", description="This field is required.")
+    get_by_role(dom, "textbox", description="This field is required.")
 
     html = """
     <div>
@@ -202,6 +263,154 @@ def test_get_by_role_accessible_description():
     with pytest.raises(NoElementsFoundError):
         get_by_role(dom, "textbox", description="not there")
 
+    html = """
+    <html lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Django Accessible Forms</title>
+      </head>
+      <body>
+        <form class="" method="post" novalidate="">
+          <div class="form-group">
+            <label for="id_title">Title (required):</label>
+            <div class="helptext" id="id_title_helptext">
+              Enter the title of the book.
+            </div>
+            <input type="text" name="title" maxlength="200"
+                  aria-describedby="id_title_errorlist id_title_helptext"
+                  aria-invalid="false" required="" id="id_title">
+            <ul id="id_title_errorlist" class="errorlist"></ul>
+          </div>
+          <div class="form-group">
+            <label for="id_publication_date">
+            Publication Date (required):
+            </label>
+            <div class="helptext" id="id_publication_date_helptext">
+              Enter the publication date.
+            </div>
+            <input type="text" name="publication_date"
+                  aria-describedby="id_publication_date_errorlist
+                                    id_publication_date_helptext"
+                  aria-invalid="false" required="" id="id_publication_date">
+            <ul id="id_publication_date_errorlist" class="errorlist"></ul>
+          </div>
+          <div class="form-group">
+            <label for="id_description">Description (optional):</label>
+            <textarea name="description" cols="40" rows="10"
+                      aria-describedby="id_description_errorlist
+                                      id_description_helptext"
+                      id="id_description"></textarea>
+            <ul id="id_description_errorlist" class="errorlist"></ul>
+          </div>
+          <div class="form-group">
+            <label for="id_author">Author (required):</label>
+            <div class="helptext" id="id_author_helptext">
+              Select the author of the book.
+            </div>
+            <select name="author"
+                    aria-describedby="id_author_errorlist id_author_helptext"
+                    aria-invalid="false" required="" id="id_author">
+              <option value="" selected="">---------</option>
+            </select>
+            <ul id="id_author_errorlist" class="errorlist"></ul>
+          </div>
+          <button type="submit">Submit</button>
+        </form>
+      </body>
+    </html>
+    """
+    dom = parse_html(html)
+    get_by_role(dom, "form")
+    get_by_role(dom, "textbox", description="Enter the title of the book.")
+    get_by_role(dom, "textbox", description="Enter the publication date.")
+    get_by_role(dom, "combobox", description="Select the author of the book.")
+
+
+def test_get_by_role_accessible_descriptions():
+    html = """
+    <html lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Django Accessible Forms</title>
+      </head>
+      <body>
+        <form class="" method="post" novalidate="">
+          <div class="form-group">
+            <label for="id_title">Title (required):</label>
+            <div class="helptext" id="id_title_helptext">
+              Enter the title of the book.
+            </div>
+            <input type="text" name="title" maxlength="200"
+                  aria-describedby="id_title_errorlist id_title_helptext"
+                  aria-invalid="false" required="" id="id_title">
+            <ul id="id_title_errorlist" class="errorlist">
+                <li>This field is required.</li>
+            </ul>
+          </div>
+          <div class="form-group">
+            <label for="id_publication_date">
+            Publication Date (required):
+            </label>
+            <div class="helptext" id="id_publication_date_helptext">
+              Enter the publication date.
+            </div>
+            <input type="text" name="publication_date"
+                  aria-describedby="id_publication_date_errorlist
+                                    id_publication_date_helptext"
+                  aria-invalid="false" required="" id="id_publication_date">
+            <ul id="id_publication_date_errorlist" class="errorlist">
+                <li>This field is required.</li>
+            </ul>
+          </div>
+          <div class="form-group">
+            <label for="id_description">Description (optional):</label>
+            <textarea name="description" cols="40" rows="10"
+                      aria-describedby="id_description_errorlist
+                                      id_description_helptext"
+                      id="id_description"></textarea>
+            <ul id="id_description_errorlist" class="errorlist">
+                <li>This field is required.</li>
+            </ul>
+          </div>
+          <div class="form-group">
+            <label for="id_author">Author (required):</label>
+            <div class="helptext" id="id_author_helptext">
+              Select the author of the book.
+            </div>
+            <select name="author"
+                    aria-describedby="id_author_errorlist id_author_helptext"
+                    aria-invalid="false" required="" id="id_author">
+              <option value="" selected="">---------</option>
+            </select>
+            <ul id="id_author_errorlist" class="errorlist">
+                <li>This field is required.</li>
+            </ul>
+          </div>
+          <button type="submit">Submit</button>
+        </form>
+      </body>
+    </html>
+    """
+    dom = parse_html(html)
+    get_by_role(dom, "form")
+    get_by_role(
+        dom,
+        "textbox",
+        description="This field is required. Enter the title of the book.",
+    )
+    get_by_role(
+        dom,
+        "textbox",
+        description="This field is required. Enter the publication date.",
+    )
+    get_by_role(
+        dom,
+        "combobox",
+        description="This field is required. Select the author of the book.",
+    )
+
 
 def test_get_by_role_accessible_name():
     html = """
@@ -217,14 +426,14 @@ def test_get_by_role_accessible_name():
       </div>
     """
     dom = parse_html(html)
-    assert get_by_role(dom, "textbox", name="The name")
+    get_by_role(dom, "textbox", name="The name")
 
     html = """
       <button aria-label="Blue" aria-labelledby="color">Red</button>
       <span id="color">Yellow</span>
     """
     dom = parse_html(html)
-    assert get_by_role(dom, "button", name="Yellow")
+    get_by_role(dom, "button", name="Yellow")
 
     html = """
     <html>
@@ -236,7 +445,7 @@ def test_get_by_role_accessible_name():
     </html>
     """
     dom = parse_html(html)
-    assert get_by_role(dom, "button", name="Yellow Red")
+    get_by_role(dom, "button", name="Yellow Red")
 
     html = """
     <html>
@@ -247,18 +456,18 @@ def test_get_by_role_accessible_name():
     </html>
     """
     dom = parse_html(html)
-    assert get_by_role(dom, "button", name="Yellow")
+    get_by_role(dom, "button", name="Yellow")
 
     html = """
       <a role="button" aria-label="Close popup" href="#close">
       <span aria-hidden="true">×</span></a>
     """
     dom = parse_html(html)
-    assert get_by_role(dom, "button", name="Close popup")
+    get_by_role(dom, "button", name="Close popup")
 
     html = '<img src="tequila.png" alt="Chamukos tequila">'
     dom = parse_html(html)
-    assert get_by_role(dom, "img", name="Chamukos tequila")
+    get_by_role(dom, "img", name="Chamukos tequila")
 
     html = """
     <a href="tequila.html">
@@ -266,7 +475,7 @@ def test_get_by_role_accessible_name():
     </a>'
     """
     dom = parse_html(html)
-    assert get_by_role(dom, "link", name="Chamukos tequila")
+    get_by_role(dom, "link", name="Chamukos tequila")
 
     html = """
     <a href="tequila.html">
@@ -274,20 +483,20 @@ def test_get_by_role_accessible_name():
     </a>
     """
     dom = parse_html(html)
-    assert get_by_role(dom, "link", name="Chamukos tequila £40")
+    get_by_role(dom, "link", name="Chamukos tequila £40")
 
     html = """
     <button aria-label="Add Chamukos tequila to cart">Add to cart</button>
     """
     dom = parse_html(html)
-    assert get_by_role(dom, "button", name="Add Chamukos tequila to cart")
+    get_by_role(dom, "button", name="Add Chamukos tequila to cart")
 
     html = """
     <input type="search" aria-labelledby="this">
     <button id="this">Search</button>
     """
     dom = parse_html(html)
-    assert get_by_role(dom, "searchbox", name="Search")
+    get_by_role(dom, "searchbox", name="Search")
 
     html = """
         <label for="id_name">The name</label>
@@ -296,7 +505,7 @@ def test_get_by_role_accessible_name():
         <input type="text" name="surname" id="id_surname">
     """
     dom = parse_html(html)
-    assert get_by_role(dom, "textbox", name="The name")
+    get_by_role(dom, "textbox", name="The name")
 
     html = """
         <label for="id_name">The name</label>
@@ -305,8 +514,8 @@ def test_get_by_role_accessible_name():
         <input type="text" name="surname" id="id_surname">
     """
     dom = parse_html(html)
-    assert get_by_role(dom, "textbox", name="The name")
-    assert get_by_role(dom, "textbox", name="The surname")
+    get_by_role(dom, "textbox", name="The name")
+    get_by_role(dom, "textbox", name="The surname")
 
 
 def test_get_by_role_aria_labelledby_multiple_refs():
@@ -324,7 +533,7 @@ def test_get_by_role_aria_labelledby_multiple_refs():
     </html>
     """
     dom = parse_html(html)
-    assert get_by_role(
+    get_by_role(
         dom,
         "alert",
         name="Important Notice Your account has been updated Please",
@@ -341,7 +550,7 @@ def test_get_by_role_aria_labelledby_multiple_refs():
     </html>
     """
     dom = parse_html(html)
-    assert get_by_role(dom, "button", name="Hello World")
+    get_by_role(dom, "button", name="Hello World")
 
     html = """
     <html>
@@ -354,7 +563,7 @@ def test_get_by_role_aria_labelledby_multiple_refs():
     </html>
     """
     dom = parse_html(html)
-    assert get_by_role(dom, "textbox", name="First Middle Last")
+    get_by_role(dom, "textbox", name="First Middle Last")
 
 
 def test_get_by_role_cell():

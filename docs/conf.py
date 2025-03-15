@@ -10,7 +10,7 @@ from pathlib import Path
 project = "unbrowsed"
 copyright = "2025, Valentino Gagliardi"
 author = "Valentino Gagliardi"
-release = "0.1.0a17"
+release = "0.1.0a18"
 
 # -- General configuration ---------------------------------------------------
 extensions = [

@@ -9,8 +9,10 @@ from unbrowsed.exceptions import (
     MultipleElementsFoundError,
     NoElementsFoundError,
 )
-from unbrowsed.matchers import RoleMatcher, TextMatch
+from unbrowsed.matchers import TextMatch
 from unbrowsed.utils import is_parent_of
+from unbrowsed.types import AriaRoles
+from unbrowsed.resolvers import RoleResolver
 
 
 class QueryResult:
@@ -240,7 +242,7 @@ def get_by_text(dom: Parser, text: str, exact=True) -> QueryResult:
 
 def query_by_role(
     dom: Parser,
-    role: str,
+    role: AriaRoles,
     current: Optional[Union[bool, str]] = None,
     name: Optional[str] = None,
     description: Optional[str] = None,
@@ -269,7 +271,7 @@ def query_by_role(
     .. versionadded:: 0.1.0a16
            The *description* parameter.
     """
-    role_matcher = RoleMatcher(
+    role_matcher = RoleResolver(
         target_role=role, name=name, description=description
     )
     matches = []
@@ -312,7 +314,7 @@ def query_by_role(
 
 def get_by_role(
     dom: Parser,
-    role: str,
+    role: AriaRoles,
     current: Optional[Union[bool, str]] = None,
     name: Optional[str] = None,
     description: Optional[str] = None,
@@ -343,6 +345,8 @@ def get_by_role(
     .. versionadded:: 0.1.0a10
     .. versionadded:: 0.1.0a15
            The *name* parameter.
+    .. versionadded:: 0.1.0a16
+           The *description* parameter.
     """
     try:
         result = query_by_role(
@@ -363,7 +367,7 @@ def get_by_role(
 
 
 def query_all_by_role(
-    dom: Parser, role: str, current: Optional[Union[bool, str]] = None
+    dom: Parser, role: AriaRoles, current: Optional[Union[bool, str]] = None
 ) -> list[QueryResult]:
     """
     Queries the DOM for all elements with the specified ARIA role.
@@ -379,7 +383,7 @@ def query_all_by_role(
 
     .. versionadded:: 0.1.0a13
     """
-    role_matcher = RoleMatcher(role)
+    role_matcher = RoleResolver(role)
     matches = []
 
     for element in dom.css("*"):
@@ -398,7 +402,7 @@ def query_all_by_role(
 
 
 def get_all_by_role(
-    dom: Parser, role: str, current: Optional[Union[bool, str]] = None
+    dom: Parser, role: AriaRoles, current: Optional[Union[bool, str]] = None
 ) -> list[QueryResult]:
     """
     Retrieves all elements from the DOM by their ARIA role.
