@@ -19,7 +19,8 @@ Grid = Literal["grid"]
 GridCell = Literal["gridcell"]
 Group = Literal["group"]
 Heading = Literal["heading"]
-Image = Literal["img"]
+Img = Literal["img"]
+Image = Literal["image"]
 Link = Literal["link"]
 List = Literal["list"]
 ListBox = Literal["listbox"]
@@ -29,6 +30,7 @@ Menu = Literal["menu"]
 Meter = Literal["meter"]
 Navigation = Literal["navigation"]
 Option = Literal["option"]
+Presentation = Literal["presentation"]
 ProgressBar = Literal["progressbar"]
 Radio = Literal["radio"]
 Region = Literal["region"]
@@ -64,6 +66,7 @@ AriaRoles = Literal[
     GridCell,
     Group,
     Heading,
+    Img,
     Image,
     Link,
     List,
@@ -74,6 +77,7 @@ AriaRoles = Literal[
     Meter,
     Navigation,
     Option,
+    Presentation,
     ProgressBar,
     Radio,
     Region,

@@ -75,9 +75,7 @@ class AccessibleNameResolver:
 
 
 def get_td_role(node: LexborNode) -> Optional[str]:
-    """
-    Determine the role of a td element based on its ancestor table element.
-    """
+    """Determine the role of a td element."""
 
     ancestor = node.parent
     while ancestor and ancestor.tag != "table":
@@ -98,6 +96,16 @@ def get_td_role(node: LexborNode) -> Optional[str]:
         return "gridcell"
 
     return None
+
+
+def get_img_role(node: LexborNode) -> Optional[str]:
+    """Determine the role of an img element."""
+    if "alt" in node.attributes:
+        alt = node.attributes.get("alt")
+        if alt == "":
+            return "presentation"
+        return "img"
+    return "img"
 
 
 class AccessibleDescriptionResolver:
@@ -149,7 +157,7 @@ class RoleResolver:
             "button": "button",
             "fieldset": "group",
             "form": "form",
-            "img": "img",
+            "img": get_img_role,
             "input": {
                 "checkbox": "checkbox",
                 "radio": "radio",
