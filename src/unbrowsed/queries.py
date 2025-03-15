@@ -1,6 +1,6 @@
 """unbrowsed queries."""
 
-from typing import Any, Optional, Union, Literal
+from typing import Any, Optional, Union
 
 from selectolax.lexbor import LexborHTMLParser as Parser
 from selectolax.lexbor import LexborNode
@@ -11,6 +11,7 @@ from unbrowsed.exceptions import (
 )
 from unbrowsed.matchers import RoleMatcher, TextMatch
 from unbrowsed.utils import is_parent_of
+from unbrowsed.types import AriaRoles
 
 
 class QueryResult:
@@ -240,7 +241,7 @@ def get_by_text(dom: Parser, text: str, exact=True) -> QueryResult:
 
 def query_by_role(
     dom: Parser,
-    role: str,
+    role: AriaRoles,
     current: Optional[Union[bool, str]] = None,
     name: Optional[str] = None,
     description: Optional[str] = None,
@@ -312,7 +313,7 @@ def query_by_role(
 
 def get_by_role(
     dom: Parser,
-    role: Literal["button", "link"],
+    role: AriaRoles,
     current: Optional[Union[bool, str]] = None,
     name: Optional[str] = None,
     description: Optional[str] = None,
@@ -363,7 +364,7 @@ def get_by_role(
 
 
 def query_all_by_role(
-    dom: Parser, role: str, current: Optional[Union[bool, str]] = None
+    dom: Parser, role: AriaRoles, current: Optional[Union[bool, str]] = None
 ) -> list[QueryResult]:
     """
     Queries the DOM for all elements with the specified ARIA role.
@@ -398,7 +399,7 @@ def query_all_by_role(
 
 
 def get_all_by_role(
-    dom: Parser, role: str, current: Optional[Union[bool, str]] = None
+    dom: Parser, role: AriaRoles, current: Optional[Union[bool, str]] = None
 ) -> list[QueryResult]:
     """
     Retrieves all elements from the DOM by their ARIA role.

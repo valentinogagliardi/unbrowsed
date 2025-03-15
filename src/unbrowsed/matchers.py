@@ -6,6 +6,7 @@ from unbrowsed.resolvers import (
     AccessibleNameResolver,
     AccessibleDescriptionResolver,
 )
+from unbrowsed.types import ImplicitRoleMapping
 
 
 def get_td_role(node: LexborNode) -> Optional[str]:
@@ -34,7 +35,7 @@ def get_td_role(node: LexborNode) -> Optional[str]:
     return None
 
 
-IMPLICIT_ROLES = {
+IMPLICIT_ROLES: ImplicitRoleMapping = {
     "a": lambda node: "link" if "href" in node.attributes else None,
     "button": "button",
     "fieldset": "group",
@@ -112,7 +113,7 @@ class RoleMatcher:
         tag = node.tag
         if not tag:
             return
-        handler = IMPLICIT_ROLES.get(tag)
+        handler = IMPLICIT_ROLES.get(tag)  # type: ignore
 
         if callable(handler):
             return handler(node)
