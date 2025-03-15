@@ -637,3 +637,31 @@ def test_get_by_role_cell():
         get_by_role(dom, "cell")
     with pytest.raises(NoElementsFoundError):
         get_by_role(dom, "gridcell")
+
+
+def test_get_by_role_img():
+    html = """
+        <div>
+        <img alt="my funny image" src=""/>
+        </div>
+    """
+    dom = parse_html(html)
+    get_by_role(dom, "img")
+
+    html = """
+        <div>
+        <img src=""/>
+        </div>
+    """
+    dom = parse_html(html)
+    get_by_role(dom, "img")
+
+
+def test_get_by_role_img_no_accessible_name():
+    html = """
+        <div>
+        <img alt="" src=""/>
+        </div>
+    """
+    dom = parse_html(html)
+    get_by_role(dom, "presentation")
