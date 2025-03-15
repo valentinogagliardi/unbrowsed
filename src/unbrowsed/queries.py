@@ -1,6 +1,6 @@
 """unbrowsed queries."""
 
-from typing import Any, Optional, Union
+from typing import Any, Optional, Union, Literal
 
 from selectolax.lexbor import LexborHTMLParser as Parser
 from selectolax.lexbor import LexborNode
@@ -312,7 +312,7 @@ def query_by_role(
 
 def get_by_role(
     dom: Parser,
-    role: str,
+    role: Literal["button", "link"],
     current: Optional[Union[bool, str]] = None,
     name: Optional[str] = None,
     description: Optional[str] = None,

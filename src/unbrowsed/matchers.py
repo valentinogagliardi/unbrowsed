@@ -38,6 +38,7 @@ IMPLICIT_ROLES = {
     "a": lambda node: "link" if "href" in node.attributes else None,
     "button": "button",
     "fieldset": "group",
+    "form": "form",
     "img": "img",
     "input": {
         "checkbox": "checkbox",
