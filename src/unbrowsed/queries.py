@@ -344,6 +344,8 @@ def get_by_role(
     .. versionadded:: 0.1.0a10
     .. versionadded:: 0.1.0a15
            The *name* parameter.
+    .. versionadded:: 0.1.0a16
+           The *description* parameter.
     """
     try:
         result = query_by_role(
