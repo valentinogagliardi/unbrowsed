@@ -3,7 +3,9 @@ from selectolax.lexbor import LexborHTMLParser
 from unbrowsed.resolvers import (
     AccessibleNameResolver,
     AccessibleDescriptionResolver,
+    RoleResolver,
 )
+from unbrowsed.parser import parse_html
 
 
 def test_accessible_name_resolver_aria_labelledby():
@@ -342,3 +344,41 @@ def test_accessible_description_resolver_aria_describedby_all_missing():
 
     description = AccessibleDescriptionResolver.resolve(element)
     assert description is None
+
+
+def test_role_matcher_a():
+    html = """
+    <a>an invalid link</a>
+    """
+    dom = parse_html(html)
+    link = dom.css_first("a")
+    assert RoleResolver.get_implicit_role(link) is None
+
+    html = """
+    <a href="/home">a invalid link</a>
+    """
+    dom = parse_html(html)
+    link = dom.css_first("a")
+    assert RoleResolver.get_implicit_role(link) == "link"
+
+
+def test_role_matcher_input_types():
+    html = """
+    <input type="checkbox">
+    <input type="radio">
+    <input type="text">
+    <input type="unknown">
+    """
+    dom = parse_html(html)
+
+    checkbox = dom.css_first('input[type="checkbox"]')
+    assert RoleResolver.get_implicit_role(checkbox) == "checkbox"
+
+    radio = dom.css_first('input[type="radio"]')
+    assert RoleResolver.get_implicit_role(radio) == "radio"
+
+    text_input = dom.css_first('input[type="text"]')
+    assert RoleResolver.get_implicit_role(text_input) == "textbox"
+
+    unknown = dom.css_first('input[type="unknown"]')
+    assert not RoleResolver.get_implicit_role(unknown)

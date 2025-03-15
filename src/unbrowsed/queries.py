@@ -9,9 +9,10 @@ from unbrowsed.exceptions import (
     MultipleElementsFoundError,
     NoElementsFoundError,
 )
-from unbrowsed.matchers import RoleMatcher, TextMatch
+from unbrowsed.matchers import TextMatch
 from unbrowsed.utils import is_parent_of
 from unbrowsed.types import AriaRoles
+from unbrowsed.resolvers import RoleResolver
 
 
 class QueryResult:
@@ -270,7 +271,7 @@ def query_by_role(
     .. versionadded:: 0.1.0a16
            The *description* parameter.
     """
-    role_matcher = RoleMatcher(
+    role_matcher = RoleResolver(
         target_role=role, name=name, description=description
     )
     matches = []
@@ -382,7 +383,7 @@ def query_all_by_role(
 
     .. versionadded:: 0.1.0a13
     """
-    role_matcher = RoleMatcher(role)
+    role_matcher = RoleResolver(role)
     matches = []
 
     for element in dom.css("*"):
