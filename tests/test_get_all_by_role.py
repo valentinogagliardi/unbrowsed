@@ -62,3 +62,23 @@ def test_get_all_by_role_meter():
     first, second = meters
     assert first.to_have_attribute("value", "100")
     assert second.to_have_attribute("value", "0")
+
+def test_get_all_by_role_generic():
+    html = """
+    <a>Example Link</a>
+    <button>Button</button>
+    """
+    dom = parse_html(html)
+    assert len(get_all_by_role(dom, "generic")) == 1
+
+    html = """
+        <p>
+          <b class="term">chemistry</b> (the study of chemicals 
+          and the composition of
+          substances) and <b class="term">physics</b> 
+          (the study of the nature and
+          properties of matter and energy).
+        </p>
+    """
+    dom = parse_html(html)
+    assert len(get_all_by_role(dom, "generic")) == 2

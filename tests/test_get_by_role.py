@@ -8,6 +8,17 @@ from unbrowsed import (
 )
 
 
+def test_get_by_role_address():
+    html = """
+        <address>
+          <a href="mailto:jim@example.com">jim@example.com</a><br />
+          <a href="tel:+14155550132">+1 (415) 555‑0132</a>
+        </address>
+    """
+    dom = parse_html(html)
+    get_by_role(dom, "group")
+
+
 def test_get_by_role_form():
     html = """
     <html lang="en">
@@ -79,6 +90,28 @@ def test_get_by_role_button():
     dom = parse_html(html)
 
     get_by_role(dom, "button")
+
+
+def test_get_by_role_generic():
+    html = """
+    <a>Example Link</a>
+    <button>Button</button>
+    """
+    dom = parse_html(html)
+    get_by_role(dom, "generic")
+
+    html = """
+        <p>
+          The two most popular science
+          courses offered by the school are
+          (the study of chemicals and the composition of
+          substances) and <b class="term">physics</b>
+          (the study of the nature and
+          properties of matter and energy).
+        </p>
+    """
+    dom = parse_html(html)
+    get_by_role(dom, "generic")
 
 
 def test_get_by_role_with_attributes():

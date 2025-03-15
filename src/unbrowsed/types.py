@@ -14,6 +14,7 @@ Definition = Literal["definition"]
 Dialog = Literal["dialog"]
 Figure = Literal["figure"]
 Form = Literal["form"]
+Generic = Literal["generic"]
 Grid = Literal["grid"]
 GridCell = Literal["gridcell"]
 Group = Literal["group"]
@@ -58,6 +59,7 @@ AriaRoles = Literal[
     Dialog,
     Figure,
     Form,
+    Generic,
     Grid,
     GridCell,
     Group,
@@ -100,7 +102,9 @@ class InputType(TypedDict):
 class ImplicitRoleMapping(TypedDict, total=False):
     a: Callable
     article: Article
+    address: Group
     aside: Complementary
+    b: Generic
     button: Button
     datalist: ListBox
     dd: Definition

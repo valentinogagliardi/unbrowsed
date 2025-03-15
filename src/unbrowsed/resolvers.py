@@ -139,7 +139,13 @@ class RoleResolver:
     @staticmethod
     def get_implicit_role_mapping() -> ImplicitRoleMapping:
         return {
-            "a": lambda node: "link" if "href" in node.attributes else None,
+            "a": lambda node: (
+                "link" if "href" in node.attributes else "generic"
+            ),
+            "article": "article",
+            "aside": "complementary",
+            "address": "group",
+            "b": "generic",
             "button": "button",
             "fieldset": "group",
             "form": "form",
@@ -204,8 +210,8 @@ class RoleResolver:
         if not tag:
             return
         handler = RoleResolver.get_implicit_role_mapping().get(
-            tag
-        )  # type: ignore
+            tag  # type: ignore
+        )
 
         if callable(handler):
             return handler(node)

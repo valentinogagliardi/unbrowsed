@@ -352,7 +352,7 @@ def test_role_matcher_a():
     """
     dom = parse_html(html)
     link = dom.css_first("a")
-    assert RoleResolver.get_implicit_role(link) is None
+    assert RoleResolver.get_implicit_role(link) == "generic"
 
     html = """
     <a href="/home">a invalid link</a>
