@@ -1,7 +1,7 @@
 """unbrowsed exceptions."""
 
 
-class MultipleElementsFoundError(AssertionError):
+class MultipleElementsFoundError(Exception):
     def __init__(self, message):
         self.message = message
         super().__init__(message)
@@ -13,7 +13,7 @@ class MultipleElementsFoundError(AssertionError):
         )
 
 
-class NoElementsFoundError(AssertionError):
+class NoElementsFoundError(Exception):
     def __init__(self, message):
         self.message = message
         super().__init__(message)
