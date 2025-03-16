@@ -8,7 +8,7 @@ from selectolax.lexbor import LexborNode
 from unbrowsed.exceptions import (
     MultipleElementsFoundError,
     NoElementsFoundError,
-    RoleNotImplemented,
+    RoleNotImplementedError,
 )
 from unbrowsed.matchers import TextMatch
 from unbrowsed.utils import is_parent_of
@@ -338,7 +338,7 @@ def get_by_role(
         A QueryResult containing the matched element and context description.
 
     Raises:
-        NoElementsFoundError:
+        RoleNotImplementedError:
             If no elements with the specified role are found.
         MultipleElementsFoundError:
             If multiple elements with matching role are found.
@@ -354,9 +354,9 @@ def get_by_role(
             dom, role, current=current, name=name, description=description
         )
         if not result:
-            raise RoleNotImplemented(
-                f"The role '{role}'is not implemented yet. "
-                f"Use query_by_role if expecting no matches."
+            raise RoleNotImplementedError(
+                f"No elements found with role '{role}' in the provided HTML tree. "
+                f"The algorithm for computing the role might be not implemented yet."
             )
         return result
     except MultipleElementsFoundError as e:

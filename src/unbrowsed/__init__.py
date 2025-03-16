@@ -1,7 +1,7 @@
 from unbrowsed.exceptions import (
     MultipleElementsFoundError,
     NoElementsFoundError,
-    RoleNotImplemented,
+    RoleNotImplementedError,
 )
 from unbrowsed.parser import parse_html
 from unbrowsed.queries import (
@@ -29,5 +29,5 @@ __all__ = [
     "MultipleElementsFoundError",
     "NoElementsFoundError",
     "QueryResult",
-    "RoleNotImplemented",
+    "RoleNotImplementedError",
 ]

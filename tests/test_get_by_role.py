@@ -132,7 +132,7 @@ def test_get_by_role_no_match():
     """
     dom = parse_html(html)
 
-    with pytest.raises(NoElementsFoundError):
+    with pytest.raises(RoleNotImplementedError):
         get_by_role(dom, "button")
 
 
