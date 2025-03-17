@@ -682,3 +682,54 @@ def test_get_by_role_img_no_accessible_name():
      """
     dom = parse_html(html)
     get_by_role(dom, "presentation")
+
+
+def test_gey_by_role_select():
+    html = """
+    <label for="pet-select">Choose a pet:</label>
+
+    <select name="pets" id="pet-select">
+      <option value="">--Please choose an option--</option>
+      <option value="dog">Dog</option>
+      <option value="cat">Cat</option>
+      <option value="hamster">Hamster</option>
+      <option value="parrot">Parrot</option>
+      <option value="spider">Spider</option>
+      <option value="goldfish">Goldfish</option>
+    </select>
+    """
+    dom = parse_html(html)
+    get_by_role(dom, "combobox")
+
+    html = """
+    <label for="shakes">Which shakes would you like to order?</label>
+    <select id="shakes" name="shakes" size>
+      <option>Vanilla Shake</option>
+      <option>Strawberry Shake</option>
+      <option>Chocolate Shake</option>
+    </select>
+    """
+    dom = parse_html(html)
+    get_by_role(dom, "combobox")
+
+    html = """
+    <label for="shakes">Which shakes would you like to order?</label>
+    <select id="shakes" name="shakes" size="2">
+      <option>Vanilla Shake</option>
+      <option>Strawberry Shake</option>
+      <option>Chocolate Shake</option>
+    </select>
+    """
+    dom = parse_html(html)
+    get_by_role(dom, "listbox")
+
+    html = """
+    <label for="shakes">Which shakes would you like to order?</label>
+    <select id="shakes" name="shakes" multiple>
+      <option>Vanilla Shake</option>
+      <option>Strawberry Shake</option>
+      <option>Chocolate Shake</option>
+    </select>
+    """
+    dom = parse_html(html)
+    get_by_role(dom, "listbox")

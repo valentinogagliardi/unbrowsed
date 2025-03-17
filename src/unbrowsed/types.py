@@ -1,4 +1,6 @@
-from typing import Literal, TypedDict, Callable
+from typing import Literal, TypedDict
+from collections.abc import Callable
+from selectolax.lexbor import LexborNode
 
 Alert = Literal["alert"]
 Article = Literal["article"]
@@ -104,7 +106,7 @@ class InputType(TypedDict):
 
 
 class ImplicitRoleMapping(TypedDict, total=False):
-    a: Callable
+    a: Callable[[LexborNode], str]
     article: Article
     address: Group
     aside: Complementary
@@ -128,7 +130,7 @@ class ImplicitRoleMapping(TypedDict, total=False):
     h5: Heading
     h6: Heading
     hr: Separator
-    img: Callable
+    img: Callable[[LexborNode], str]
     input: InputType
     li: ListItem
     main: Main
@@ -141,11 +143,11 @@ class ImplicitRoleMapping(TypedDict, total=False):
     output: Status
     progress: ProgressBar
     section: Region
-    select: ComboBox
+    select: Callable[[LexborNode], str]
     summary: Button
     table: Table
     tbody: RowGroup
-    td: Callable
+    td: Callable[[LexborNode], str]
     textarea: TextBox
     tfoot: RowGroup
     th: ColumnHeader
