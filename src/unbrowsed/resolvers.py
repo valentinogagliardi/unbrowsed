@@ -113,9 +113,7 @@ class RoleResolver:
     @staticmethod
     def get_implicit_role_mapping() -> ImplicitRoleMapping:
         return {
-            "a": lambda node: (
-                "link" if "href" in node.attributes else "generic"
-            ),
+            "a": RoleResolver.get_a_role,
             "article": "article",
             "aside": "complementary",
             "address": "group",
@@ -133,7 +131,7 @@ class RoleResolver:
                 "password": "textbox",
             },
             "textarea": "textbox",
-            "select": "combobox",
+            "select": RoleResolver.get_select_role,
             "nav": "navigation",
             "main": "main",
             "meter": "meter",
@@ -195,14 +193,14 @@ class RoleResolver:
         return handler if isinstance(handler, str) else None
 
     @staticmethod
-    def get_td_role(node: LexborNode) -> Optional[str]:
+    def get_td_role(node: LexborNode) -> str:
         """Determine the role of a td element."""
         ancestor = node.parent
         while ancestor and ancestor.tag != "table":
             ancestor = ancestor.parent
 
         if not ancestor:
-            return None
+            return ""
 
         table_role = ancestor.attributes.get("role")
 
@@ -215,10 +213,10 @@ class RoleResolver:
         elif table_role in ["grid", "treegrid"]:
             return "gridcell"
 
-        return None
+        return ""
 
     @staticmethod
-    def get_img_role(node: LexborNode) -> Optional[str]:
+    def get_img_role(node: LexborNode) -> str:
         """Determine the role of an img element."""
         if "alt" in node.attributes:
             alt = node.attributes.get("alt")
@@ -231,3 +229,23 @@ class RoleResolver:
         ):
             return "presentation"
         return "img"
+
+    @staticmethod
+    def get_select_role(node: LexborNode) -> str:
+        """Determine the role of a select element."""
+        if "multiple" in node.attributes:
+            return "listbox"
+        if (
+            "size" in node.attributes
+            and node.attributes.get("size", None) is not None
+        ):
+            if int(node.attributes.get("size")) > 1:  # type: ignore
+                return "listbox"
+        return "combobox"
+
+    @staticmethod
+    def get_a_role(node: LexborNode) -> str:
+        """Determine the role of an element"""
+        if "href" in node.attributes:
+            return "link"
+        return "generic"
