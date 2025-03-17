@@ -74,40 +74,6 @@ class AccessibleNameResolver:
         return None
 
 
-def get_td_role(node: LexborNode) -> Optional[str]:
-    """Determine the role of a td element."""
-
-    ancestor = node.parent
-    while ancestor and ancestor.tag != "table":
-        ancestor = ancestor.parent
-
-    if not ancestor:
-        return None
-
-    table_role = ancestor.attributes.get("role")
-
-    if not table_role:
-        return "cell"
-
-    table_role = table_role.lower()
-    if table_role == "table":
-        return "cell"
-    elif table_role in ["grid", "treegrid"]:
-        return "gridcell"
-
-    return None
-
-
-def get_img_role(node: LexborNode) -> Optional[str]:
-    """Determine the role of an img element."""
-    if "alt" in node.attributes:
-        alt = node.attributes.get("alt")
-        if alt == "":
-            return "presentation"
-        return "img"
-    return "img"
-
-
 class AccessibleDescriptionResolver:
     @staticmethod
     def resolve(node: LexborNode) -> Optional[str]:
@@ -157,7 +123,7 @@ class RoleResolver:
             "button": "button",
             "fieldset": "group",
             "form": "form",
-            "img": get_img_role,
+            "img": RoleResolver.get_img_role,
             "input": {
                 "checkbox": "checkbox",
                 "radio": "radio",
@@ -181,7 +147,7 @@ class RoleResolver:
             "h6": "heading",
             "ul": "list",
             "ol": "list",
-            "td": get_td_role,
+            "td": RoleResolver.get_td_role,
         }
 
     def matches(self, node: LexborNode) -> bool:
@@ -227,3 +193,41 @@ class RoleResolver:
             input_type = node.attributes.get("type", "")
             return handler.get(input_type)
         return handler if isinstance(handler, str) else None
+
+    @staticmethod
+    def get_td_role(node: LexborNode) -> Optional[str]:
+        """Determine the role of a td element."""
+        ancestor = node.parent
+        while ancestor and ancestor.tag != "table":
+            ancestor = ancestor.parent
+
+        if not ancestor:
+            return None
+
+        table_role = ancestor.attributes.get("role")
+
+        if not table_role:
+            return "cell"
+
+        table_role = table_role.lower()
+        if table_role == "table":
+            return "cell"
+        elif table_role in ["grid", "treegrid"]:
+            return "gridcell"
+
+        return None
+
+    @staticmethod
+    def get_img_role(node: LexborNode) -> Optional[str]:
+        """Determine the role of an img element."""
+        if "alt" in node.attributes:
+            alt = node.attributes.get("alt")
+            if alt == "":
+                return "presentation"
+            return "img"
+        if "alt" not in node.attributes and not (
+            AccessibleNameResolver.resolve(node)
+            or AccessibleDescriptionResolver.resolve(node)
+        ):
+            return "presentation"
+        return "img"

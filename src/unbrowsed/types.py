@@ -128,7 +128,7 @@ class ImplicitRoleMapping(TypedDict, total=False):
     h5: Heading
     h6: Heading
     hr: Separator
-    img: Image
+    img: Callable
     input: InputType
     li: ListItem
     main: Main

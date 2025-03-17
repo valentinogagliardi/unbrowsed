@@ -650,7 +650,16 @@ def test_get_by_role_img():
 
     html = """
         <div>
-        <img src=""/>
+        <img aria-label="the label" src=""/>
+        </div>
+    """
+    dom = parse_html(html)
+    get_by_role(dom, "img")
+
+    html = """
+        <div>
+        <img aria-labelledby="the-label" src=""/>
+        <span id="the-label">the image label<span/>
         </div>
     """
     dom = parse_html(html)
@@ -660,8 +669,16 @@ def test_get_by_role_img():
 def test_get_by_role_img_no_accessible_name():
     html = """
         <div>
-        <img alt="" src=""/>
+        <img alt=""/>
         </div>
     """
+    dom = parse_html(html)
+    get_by_role(dom, "presentation")
+
+    html = """
+         <div>
+         <img/>
+         </div>
+     """
     dom = parse_html(html)
     get_by_role(dom, "presentation")
