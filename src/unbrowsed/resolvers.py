@@ -115,9 +115,11 @@ class RoleResolver:
             "address": "group",
             "b": "generic",
             "button": "button",
+            "body": "generic",
             "fieldset": "group",
             "form": "form",
             "img": RoleResolver.get_img_role,
+            "html": "document",
             "input": {
                 "checkbox": "checkbox",
                 "radio": "radio",
