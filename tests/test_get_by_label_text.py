@@ -21,7 +21,8 @@ def labels_html():
 def test_get_by_label_text(labels_html):
     dom = parse_html(labels_html)
 
-    assert get_by_label_text(dom, "Email")
+    get_by_label_text(dom, "Email")
+    get_by_label_text(dom, "Password")
 
     with pytest.raises(NoElementsFoundError) as exc:
         get_by_label_text(dom, "email")
@@ -29,8 +30,6 @@ def test_get_by_label_text(labels_html):
         "No elements found with label 'email'. "
         "Use query_by_label_text if expecting no matches." == str(exc.value)
     )
-
-    assert get_by_label_text(dom, "Password")
 
     html = """
         <form>
@@ -40,15 +39,15 @@ def test_get_by_label_text(labels_html):
         """
     dom = parse_html(html)
 
-    assert get_by_label_text(dom, "Email Address")
+    get_by_label_text(dom, "Email Address")
 
 
 def test_get_by_label_text_exact(labels_html):
     dom = parse_html(labels_html)
 
-    assert get_by_label_text(dom, "email", exact=False)
-    assert get_by_label_text(dom, "password", exact=False)
-    assert get_by_label_text(dom, "passw", exact=False)
+    get_by_label_text(dom, "email", exact=False)
+    get_by_label_text(dom, "password", exact=False)
+    get_by_label_text(dom, "passw", exact=False)
 
 
 def test_get_by_label_text_no_match():
@@ -95,4 +94,14 @@ def test_get_by_label_text_nested_control():
     """
     dom = parse_html(html)
 
-    assert get_by_label_text(dom, "Username")
+    get_by_label_text(dom, "Username")
+
+
+def test_no_for_attr():
+    html = """
+    <label>Password</label>
+    <input id="password" type="password">
+    """
+    dom = parse_html(html)
+    with pytest.raises(NoElementsFoundError):
+        get_by_label_text(dom, "Password")

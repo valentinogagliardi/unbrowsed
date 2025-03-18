@@ -21,9 +21,7 @@ class AccessibleNameResolver:
                     text = element.text(deep=True, strip=True)
                     if text:
                         name_texts.append(text)
-
-            if name_texts:
-                return " ".join(name_texts)
+            return " ".join(name_texts)
 
         if aria_label := node.attributes.get("aria-label"):
             aria_label = aria_label.strip()
@@ -63,9 +61,7 @@ class AccessibleNameResolver:
                     return f"{alt_text} {node_text}"
                 return alt_text
 
-            content = node.text(deep=True, strip=True)
-            if content:
-                return content
+            return node.text(deep=True, strip=True)
 
         if title := node.attributes.get("title"):
             if title.strip():
@@ -176,11 +172,7 @@ class RoleResolver:
 
     @staticmethod
     def get_implicit_role(node: LexborNode):
-        if not hasattr(node, "tag"):
-            return
         tag = node.tag
-        if not tag:
-            return
         handler = RoleResolver.get_implicit_role_mapping().get(
             tag  # type: ignore
         )
@@ -199,10 +191,7 @@ class RoleResolver:
         while ancestor and ancestor.tag != "table":
             ancestor = ancestor.parent
 
-        if not ancestor:
-            return ""
-
-        table_role = ancestor.attributes.get("role")
+        table_role = ancestor.attributes.get("role")  # type: ignore
 
         if not table_role:
             return "cell"

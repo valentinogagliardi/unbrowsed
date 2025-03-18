@@ -382,3 +382,14 @@ def test_role_matcher_input_types():
 
     unknown = dom.css_first('input[type="unknown"]')
     assert not RoleResolver.get_implicit_role(unknown)
+
+
+def test_input_without_label():
+    html = """
+        <input id="username" type="text">
+        <label>Username</label>
+    """
+    parser = LexborHTMLParser(html)
+    input_element = parser.css_first("input")
+
+    assert AccessibleNameResolver.resolve(input_element) is None
