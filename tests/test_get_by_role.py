@@ -714,6 +714,17 @@ def test_gey_by_role_select():
 
     html = """
     <label for="shakes">Which shakes would you like to order?</label>
+    <select id="shakes" name="shakes" size="1">
+      <option>Vanilla Shake</option>
+      <option>Strawberry Shake</option>
+      <option>Chocolate Shake</option>
+    </select>
+    """
+    dom = parse_html(html)
+    get_by_role(dom, "combobox")
+
+    html = """
+    <label for="shakes">Which shakes would you like to order?</label>
     <select id="shakes" name="shakes" size="2">
       <option>Vanilla Shake</option>
       <option>Strawberry Shake</option>

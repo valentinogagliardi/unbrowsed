@@ -14,6 +14,8 @@ from unbrowsed.utils import is_parent_of
 from unbrowsed.types import AriaRoles
 from unbrowsed.resolvers import RoleResolver
 
+SELECTOR = "*:not(html):not(body)"
+
 
 class QueryResult:
     """Wrapper class for query result."""
@@ -170,29 +172,22 @@ def query_by_text(dom: Parser, text: str, exact=True) -> Optional[QueryResult]:
     search_text = TextMatch(text, exact=exact)
     matches = []
 
-    for element in dom.css("*"):
+    for element in dom.css(SELECTOR):
         element_text = element.text(deep=True, strip=True)
 
         if search_text.matches(element_text):
             matches.append(element)
 
     if len(matches) > 1:
-        exclusions = ("html", "body")
-        filtered_matches = [m for m in matches if m.tag not in exclusions]
+        for i, parent in enumerate(matches):
+            for j, child in enumerate(matches):
+                if i != j and is_parent_of(parent, child):
+                    return QueryResult(matches[i])
 
-        if filtered_matches:
-            matches = filtered_matches
-
-        if len(matches) > 1:
-            for i, parent in enumerate(matches):
-                for j, child in enumerate(matches):
-                    if i != j and is_parent_of(parent, child):
-                        return QueryResult(matches[i])
-
-            raise MultipleElementsFoundError(
-                f"Found {len(matches)} elements with text '{text}'. "
-                f"Use query_all_by_text if multiple matches are expected."
-            )
+        raise MultipleElementsFoundError(
+            f"Found {len(matches)} elements with text '{text}'. "
+            f"Use query_all_by_text if multiple matches are expected."
+        )
 
     if not matches:
         return None
@@ -276,7 +271,7 @@ def query_by_role(
     )
     matches = []
 
-    for element in dom.css("*"):
+    for element in dom.css(SELECTOR):
         if not role_matcher.matches(element):
             continue
 
@@ -287,13 +282,6 @@ def query_by_role(
                 continue
 
         matches.append(element)
-
-    if len(matches) > 1:
-        exclusions = ("html", "body")
-        filtered_matches = [m for m in matches if m.tag not in exclusions]
-
-        if filtered_matches:
-            matches = filtered_matches
 
         if len(matches) > 1:
             for i, parent in enumerate(matches):
