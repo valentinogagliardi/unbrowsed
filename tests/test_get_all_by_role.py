@@ -66,13 +66,26 @@ def test_get_all_by_role_meter():
 
 def test_get_all_by_role_generic():
     html = """
-    <a>Example Link</a>
-    <button>Button</button>
+    <body>
+    </body>
     """
     dom = parse_html(html)
     assert len(get_all_by_role(dom, "generic")) == 1
 
     html = """
+    <html>
+    <body>
+        <a>Example Link</a>
+        <button>Button</button>
+    </body>
+    </html>
+    """
+    dom = parse_html(html)
+    assert len(get_all_by_role(dom, "generic")) == 2
+
+    html = """
+        <html>
+        <body>
         <p>
           <b class="term">chemistry</b> (the study of chemicals
           and the composition of
@@ -80,6 +93,34 @@ def test_get_all_by_role_generic():
           (the study of the nature and
           properties of matter and energy).
         </p>
+        </body>
+        </html>
+            """
+    dom = parse_html(html)
+    assert len(get_all_by_role(dom, "generic")) == 3
+
+
+def test_get_all_by_role_document():
+    html = """
+        <html>
+        <body>
+        <img alt=""/>
+        </body>
+        </html>
     """
     dom = parse_html(html)
-    assert len(get_all_by_role(dom, "generic")) == 2
+    assert len(get_all_by_role(dom, "document")) == 1
+
+    html = """
+        <html>
+        <body>
+        <img alt=""/>
+        <article role="document"></article>
+        </body>
+        </html>
+    """
+    dom = parse_html(html)
+    assert len(get_all_by_role(dom, "document")) == 2
+    doc, article = get_all_by_role(dom, "document")
+    assert doc.element.tag == "html"
+    assert article.element.tag == "article"

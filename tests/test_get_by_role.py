@@ -744,3 +744,16 @@ def test_gey_by_role_select():
     """
     dom = parse_html(html)
     get_by_role(dom, "listbox")
+
+
+def test_get_by_role_document():
+    html = """
+        <html>
+        <body>
+        <img alt=""/>
+        </body>
+        </html>
+    """
+    dom = parse_html(html)
+    match = get_by_role(dom, "document")
+    assert match.element.tag == "html"

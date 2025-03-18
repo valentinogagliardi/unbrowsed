@@ -13,8 +13,7 @@ from unbrowsed.matchers import TextMatch
 from unbrowsed.utils import is_parent_of
 from unbrowsed.types import AriaRoles
 from unbrowsed.resolvers import RoleResolver
-
-SELECTOR = "*:not(html):not(body)"
+from unbrowsed.utils import get_selector
 
 
 class QueryResult:
@@ -172,7 +171,7 @@ def query_by_text(dom: Parser, text: str, exact=True) -> Optional[QueryResult]:
     search_text = TextMatch(text, exact=exact)
     matches = []
 
-    for element in dom.css(SELECTOR):
+    for element in dom.css(get_selector()):
         element_text = element.text(deep=True, strip=True)
 
         if search_text.matches(element_text):
@@ -271,7 +270,7 @@ def query_by_role(
     )
     matches = []
 
-    for element in dom.css(SELECTOR):
+    for element in dom.css(get_selector(role)):
         if not role_matcher.matches(element):
             continue
 

@@ -6,6 +6,7 @@ Alert = Literal["alert"]
 Article = Literal["article"]
 Banner = Literal["banner"]
 Button = Literal["button"]
+Body = Literal["generic"]
 Cell = Literal["cell"]
 Checkbox = Literal["checkbox"]
 ColumnHeader = Literal["columnheader"]
@@ -21,6 +22,7 @@ Grid = Literal["grid"]
 GridCell = Literal["gridcell"]
 Group = Literal["group"]
 Heading = Literal["heading"]
+Html = Literal["document"]
 Img = Literal["img"]
 Image = Literal["image"]
 Link = Literal["link"]
@@ -53,6 +55,7 @@ AriaRoles = Literal[
     Article,
     Banner,
     Button,
+    Body,
     Cell,
     Checkbox,
     ColumnHeader,
@@ -68,6 +71,7 @@ AriaRoles = Literal[
     GridCell,
     Group,
     Heading,
+    Html,
     Img,
     Image,
     Link,
@@ -112,6 +116,7 @@ class ImplicitRoleMapping(TypedDict, total=False):
     aside: Complementary
     b: Generic
     button: Button
+    body: Generic
     datalist: ListBox
     dd: Definition
     details: Group
@@ -130,6 +135,7 @@ class ImplicitRoleMapping(TypedDict, total=False):
     h5: Heading
     h6: Heading
     hr: Separator
+    html: Html
     img: Callable[[LexborNode], str]
     input: InputType
     li: ListItem
