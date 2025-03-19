@@ -355,8 +355,8 @@ def get_by_role(
         )
         if not result:
             raise RoleNotImplementedError(
-                f"No elements found with role '{role}' in the provided HTML tree. "
-                f"The algorithm for computing the role might be not implemented yet."
+                f"No elements found with '{role}'. "
+                f"Use query_by_role if expecting no matches."
             )
         return result
     except MultipleElementsFoundError as e:
