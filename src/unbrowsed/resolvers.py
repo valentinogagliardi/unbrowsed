@@ -7,8 +7,11 @@ from unbrowsed.types import ImplicitRoleMapping
 
 class AccessibleNameResolver:
 
-    @staticmethod
-    def resolve(node: LexborNode) -> Optional[str]:
+    def __init__(self, element):
+        self.element = element
+
+    def resolve(self) -> Optional[str]:
+        node = self.element
         labelledby = node.attributes.get("aria-labelledby")
         if labelledby:
             root = node
@@ -71,8 +74,11 @@ class AccessibleNameResolver:
 
 
 class AccessibleDescriptionResolver:
-    @staticmethod
-    def resolve(node: LexborNode) -> Optional[str]:
+    def __init__(self, element):
+        self.element = element
+
+    def resolve(self) -> Optional[str]:
+        node = self.element
         describedby = node.attributes.get("aria-describedby")
         if not describedby:
             return None
@@ -98,18 +104,19 @@ class RoleResolver:
 
     def __init__(
         self,
+        element: LexborNode,
         target_role: str,
         name: Optional[str] = None,
         description: Optional[str] = None,
     ):
+        self.element = element
         self.target_role = target_role.lower()
         self.name = name
         self.description = description
 
-    @staticmethod
-    def get_implicit_role_mapping() -> ImplicitRoleMapping:
+    def get_implicit_role_mapping(self) -> ImplicitRoleMapping:
         return {
-            "a": RoleResolver.get_a_role,
+            "a": self.get_a_role,
             "article": "article",
             "aside": "complementary",
             "address": "group",
@@ -118,7 +125,7 @@ class RoleResolver:
             "body": "generic",
             "fieldset": "group",
             "form": "form",
-            "img": RoleResolver.get_img_role,
+            "img": self.get_img_role,
             "html": "document",
             "input": {
                 "checkbox": "checkbox",
@@ -129,12 +136,12 @@ class RoleResolver:
                 "password": "textbox",
             },
             "textarea": "textbox",
-            "select": RoleResolver.get_select_role,
+            "select": self.get_select_role,
             "nav": "navigation",
             "main": "main",
             "meter": "meter",
             "header": "banner",
-            "footer": RoleResolver.get_footer_role,
+            "footer": self.get_footer_role,
             "h1": "heading",
             "h2": "heading",
             "h3": "heading",
@@ -143,13 +150,13 @@ class RoleResolver:
             "h6": "heading",
             "ul": "list",
             "ol": "list",
-            "td": RoleResolver.get_td_role,
+            "td": self.get_td_role,
         }
 
-    def matches(self, node: LexborNode) -> bool:
+    def matches(self) -> bool:
 
-        explicit_role = node.attributes.get("role")
-        implicit_role = RoleResolver.get_implicit_role(node)
+        explicit_role = self.element.attributes.get("role")
+        implicit_role = self.get_implicit_role_handler()
 
         role_matches = False
         if (explicit_role and explicit_role.lower() == self.target_role) or (
@@ -161,38 +168,36 @@ class RoleResolver:
             return False
 
         if self.name is not None:
-            node_name = AccessibleNameResolver.resolve(node)
+            node_name = AccessibleNameResolver(self.element).resolve()
             if node_name != self.name:
                 return False
 
         if self.description is not None:
-            node_description = AccessibleDescriptionResolver.resolve(node)
+            node_description = AccessibleDescriptionResolver(
+                self.element
+            ).resolve()
             if node_description != self.description:
                 return False
 
         return True
 
-    @staticmethod
-    def get_implicit_role(node: LexborNode):
-        tag = node.tag
-        handler = RoleResolver.get_implicit_role_mapping().get(
-            tag  # type: ignore
-        )
+    def get_implicit_role_handler(self):
+        tag = self.element.tag
+        handler = self.get_implicit_role_mapping().get(tag)  # type: ignore
 
         if callable(handler):
-            return handler(node)
+            return handler()
         if isinstance(handler, dict):
-            input_type = node.attributes.get("type", "")
+            input_type = self.element.attributes.get("type", "")
             return handler.get(input_type)
         return handler if isinstance(handler, str) else None
 
-    @staticmethod
-    def get_td_role(node: LexborNode) -> str:
+    def get_td_role(self) -> str:
         """
         Determine the implicit role of a <td> element.
         https://developer.mozilla.org/en-US/docs/Web/HTML/Element/td#technical_summary
         """
-        ancestor = node.parent
+        ancestor = self.element.parent
         while ancestor and ancestor.tag != "table":
             ancestor = ancestor.parent
 
@@ -209,57 +214,53 @@ class RoleResolver:
 
         return ""
 
-    @staticmethod
-    def get_img_role(node: LexborNode) -> str:
+    def get_img_role(self) -> str:
         """
         Determine the implicit role of an <img> element.
         https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img#technical_summary
         """
-        if "alt" in node.attributes:
-            alt = node.attributes.get("alt")
+        if "alt" in self.element.attributes:
+            alt = self.element.attributes.get("alt")
             if alt == "":
                 return "presentation"
             return "img"
-        if "alt" not in node.attributes and not (
-            AccessibleNameResolver.resolve(node)
-            or AccessibleDescriptionResolver.resolve(node)
+        if "alt" not in self.element.attributes and not (
+            AccessibleNameResolver(self.element).resolve()
+            or AccessibleDescriptionResolver(self.element).resolve()
         ):
             return "presentation"
         return "img"
 
-    @staticmethod
-    def get_select_role(node: LexborNode) -> str:
+    def get_select_role(self) -> str:
         """
         Determine the implicit role of a <select> element.
         https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select#technical_summary
         """
-        if "multiple" in node.attributes:
+        if "multiple" in self.element.attributes:
             return "listbox"
         if (
-            "size" in node.attributes
-            and node.attributes.get("size", None) is not None
+            "size" in self.element.attributes
+            and self.element.attributes.get("size", None) is not None
         ):
-            if int(node.attributes.get("size")) > 1:  # type: ignore
+            if int(self.element.attributes.get("size")) > 1:  # type: ignore
                 return "listbox"
         return "combobox"
 
-    @staticmethod
-    def get_a_role(node: LexborNode) -> str:
+    def get_a_role(self) -> str:
         """
         Determine the implicit role of an <a> element.
         https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#technical_summary
         """
-        if "href" in node.attributes:
+        if "href" in self.element.attributes:
             return "link"
         return "generic"
 
-    @staticmethod
-    def get_footer_role(node: LexborNode) -> str:
+    def get_footer_role(self) -> str:
         """
         Determine the implicit role of a <footer> element.
         https://developer.mozilla.org/en-US/docs/Web/HTML/Element/footer#technical_summary
         """
-        parent = node.parent
+        parent = self.element.parent
 
         if parent is not None:
             if parent.tag in [
