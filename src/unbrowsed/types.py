@@ -126,7 +126,7 @@ class ImplicitRoleMapping(TypedDict, total=False):
     fieldset: Group
     figure: Figure
     form: Form
-    footer: ContentInfo
+    footer: Callable[[LexborNode], str]
     header: Banner
     h1: Heading
     h2: Heading

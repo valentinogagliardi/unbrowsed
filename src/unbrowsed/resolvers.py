@@ -134,7 +134,7 @@ class RoleResolver:
             "main": "main",
             "meter": "meter",
             "header": "banner",
-            "footer": "contentinfo",
+            "footer": RoleResolver.get_footer_role,
             "h1": "heading",
             "h2": "heading",
             "h3": "heading",
@@ -240,3 +240,29 @@ class RoleResolver:
         if "href" in node.attributes:
             return "link"
         return "generic"
+
+    @staticmethod
+    def get_footer_role(node: LexborNode) -> str:
+        """
+        Determine the role of a footer.
+        https://developer.mozilla.org/en-US/docs/Web/HTML/Element/footer#technical_summary
+        """
+        parent = node.parent
+
+        if parent is not None:
+            if parent.tag in [
+                "article",
+                "aside",
+                "main",
+                "nav",
+                "section",
+            ] or parent.css_first(
+                ":is([role='article'],"
+                "[role='complementary'],"
+                "[role='main'],"
+                "[role='navigation'],"
+                "[role='region'])"
+            ):
+                return "generic"
+
+        return "contentinfo"

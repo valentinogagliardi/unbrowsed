@@ -5,7 +5,7 @@ from unbrowsed import (
     parse_html,
     query_by_label_text,
     query_by_text,
-    QueryResult,
+    Result,
 )
 
 
@@ -97,7 +97,7 @@ def test_to_have_text_content_with_query_by_role():
 
     contact_link = dom.css_first('a[aria-current="page"]')
     assert contact_link is not None
-    current_link = QueryResult(contact_link)
+    current_link = Result(contact_link)
 
     assert current_link.to_have_text_content("Contact")
     assert not current_link.to_have_text_content("contact")

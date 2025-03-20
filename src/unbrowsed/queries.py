@@ -16,7 +16,7 @@ from unbrowsed.resolvers import RoleResolver
 from unbrowsed.utils import get_selector
 
 
-class QueryResult:
+class Result:
     """Wrapper class for query result."""
 
     def __init__(self, element: LexborNode):
@@ -62,7 +62,7 @@ class QueryResult:
 
 def query_by_label_text(
     dom: Parser, text: str, exact=True
-) -> Optional[QueryResult]:
+) -> Optional[Result]:
     """
     Queries the DOM for an element associated with a label
     containing the specified text.
@@ -74,7 +74,7 @@ def query_by_label_text(
                When `False`, matches substrings and is not case-sensitive.
 
     Returns:
-        A QueryResult containing the matched element.
+        A Result containing the matched element.
 
     Raises:
         MultipleElementsFoundError:
@@ -104,10 +104,10 @@ def query_by_label_text(
 
     if not matches:
         return None
-    return QueryResult(matches[0])
+    return Result(matches[0])
 
 
-def get_by_label_text(dom: Parser, text: str, exact=True) -> QueryResult:
+def get_by_label_text(dom: Parser, text: str, exact=True) -> Result:
     """
     Retrieves an element from the DOM by its label text.
 
@@ -121,7 +121,7 @@ def get_by_label_text(dom: Parser, text: str, exact=True) -> QueryResult:
                When `False`, matches substrings and is not case-sensitive.
 
     Returns:
-        A QueryResult containing the matched element.
+        A Result containing the matched element.
 
     Raises:
         NoElementsFoundError:
@@ -148,7 +148,7 @@ def get_by_label_text(dom: Parser, text: str, exact=True) -> QueryResult:
         )
 
 
-def query_by_text(dom: Parser, text: str, exact=True) -> Optional[QueryResult]:
+def query_by_text(dom: Parser, text: str, exact=True) -> Optional[Result]:
     """
     Queries the DOM for an element containing the specified text.
 
@@ -159,7 +159,7 @@ def query_by_text(dom: Parser, text: str, exact=True) -> Optional[QueryResult]:
                When `False`, matches substrings and is not case-sensitive.
 
     Returns:
-        A QueryResult containing the matched element.
+        A Result containing the matched element.
 
     Raises:
         MultipleElementsFoundError:
@@ -181,7 +181,7 @@ def query_by_text(dom: Parser, text: str, exact=True) -> Optional[QueryResult]:
         for i, parent in enumerate(matches):
             for j, child in enumerate(matches):
                 if i != j and is_parent_of(parent, child):
-                    return QueryResult(matches[i])
+                    return Result(matches[i])
 
         raise MultipleElementsFoundError(
             f"Found {len(matches)} elements with text '{text}'. "
@@ -190,10 +190,10 @@ def query_by_text(dom: Parser, text: str, exact=True) -> Optional[QueryResult]:
 
     if not matches:
         return None
-    return QueryResult(matches[0])
+    return Result(matches[0])
 
 
-def get_by_text(dom: Parser, text: str, exact=True) -> QueryResult:
+def get_by_text(dom: Parser, text: str, exact=True) -> Result:
     """
     Retrieves an element from the DOM by its text content.
 
@@ -207,7 +207,7 @@ def get_by_text(dom: Parser, text: str, exact=True) -> QueryResult:
                When `False`, matches substrings and is not case-sensitive.
 
     Returns:
-        A QueryResult containing the matched element.
+        A Result containing the matched element.
 
     Raises:
         NoElementsFoundError:
@@ -240,7 +240,7 @@ def query_by_role(
     current: Optional[bool | str] = None,
     name: Optional[str] = None,
     description: Optional[str] = None,
-) -> Optional[QueryResult]:
+) -> Optional[Result]:
     """
     Queries the DOM for an element with the specified ARIA role.
 
@@ -253,7 +253,7 @@ def query_by_role(
         description: The accessible description of the element.
 
     Returns:
-        A QueryResult containing the matched element.
+        A Result containing the matched element.
 
     Raises:
         MultipleElementsFoundError:
@@ -286,7 +286,7 @@ def query_by_role(
             for i, parent in enumerate(matches):
                 for j, child in enumerate(matches):
                     if i != j and is_parent_of(parent, child):
-                        return QueryResult(child)
+                        return Result(child)
 
             raise MultipleElementsFoundError(
                 f"Found {len(matches)} elements with role '{role}'. "
@@ -296,7 +296,7 @@ def query_by_role(
     if not matches:
         return None
 
-    return QueryResult(matches[0])
+    return Result(matches[0])
 
 
 def get_by_role(
@@ -305,7 +305,7 @@ def get_by_role(
     current: Optional[bool | str] = None,
     name: Optional[str] = None,
     description: Optional[str] = None,
-) -> QueryResult:
+) -> Result:
     """
     Retrieves an element from the DOM by its ARIA role.
 
@@ -321,7 +321,7 @@ def get_by_role(
         description: The accessible description of the element.
 
     Returns:
-        A QueryResult containing the matched element and context description.
+        A Result containing the matched element and context description.
 
     Raises:
         NoElementsFoundError:
@@ -355,7 +355,7 @@ def get_by_role(
 
 def query_all_by_role(
     dom: Parser, role: AriaRoles, current: Optional[bool | str] = None
-) -> list[QueryResult]:
+) -> list[Result]:
     """
     Queries the DOM for all elements with the specified ARIA role.
 
@@ -366,7 +366,7 @@ def query_all_by_role(
                  Can be a boolean or string "true".
 
     Returns:
-        A list of QueryResult objects containing the matched elements.
+        A list of Result objects containing the matched elements.
 
     .. versionadded:: 0.1.0a13
     """
@@ -383,14 +383,14 @@ def query_all_by_role(
             if actual != expected:
                 continue
 
-        matches.append(QueryResult(element))
+        matches.append(Result(element))
 
     return matches
 
 
 def get_all_by_role(
     dom: Parser, role: AriaRoles, current: Optional[bool | str] = None
-) -> list[QueryResult]:
+) -> list[Result]:
     """
     Retrieves all elements from the DOM by their ARIA role.
 
@@ -403,7 +403,7 @@ def get_all_by_role(
                  Can be a boolean or string "true".
 
     Returns:
-        A list of QueryResult objects containing the matched elements.
+        A list of Result objects containing the matched elements.
 
     Raises:
         NoElementsFoundError:
