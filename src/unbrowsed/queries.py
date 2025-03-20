@@ -265,13 +265,17 @@ def query_by_role(
     .. versionadded:: 0.1.0a16
            The *description* parameter.
     """
-    role_matcher = RoleResolver(
-        target_role=role, name=name, description=description
-    )
+
     matches = []
 
     for element in dom.css(get_selector(role)):
-        if not role_matcher.matches(element):
+        role_matcher = RoleResolver(
+            element=element,
+            target_role=role,
+            name=name,
+            description=description,
+        )
+        if not role_matcher.matches():
             continue
 
         if current is not None:
@@ -370,11 +374,12 @@ def query_all_by_role(
 
     .. versionadded:: 0.1.0a13
     """
-    role_matcher = RoleResolver(role)
+
     matches = []
 
     for element in dom.css("*"):
-        if not role_matcher.matches(element):
+        role_matcher = RoleResolver(element=element, target_role=role)
+        if not role_matcher.matches():
             continue
 
         if current is not None:
