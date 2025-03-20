@@ -4,7 +4,7 @@ from unbrowsed.exceptions import (
 )
 from unbrowsed.parser import parse_html
 from unbrowsed.queries import (
-    QueryResult,
+    Result,
     get_all_by_role,
     get_by_label_text,
     get_by_role,
@@ -27,5 +27,5 @@ __all__ = [
     "get_all_by_role",
     "MultipleElementsFoundError",
     "NoElementsFoundError",
-    "QueryResult",
+    "Result",
 ]

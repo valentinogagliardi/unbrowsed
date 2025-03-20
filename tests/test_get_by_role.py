@@ -757,3 +757,131 @@ def test_get_by_role_document():
     dom = parse_html(html)
     match = get_by_role(dom, "document")
     assert match.element.tag == "html"
+
+
+def test_get_by_role_footer():
+    html = """
+    <html>
+        <body>
+            <footer>the footer</footer>
+        </body>
+    </html>
+    """
+    dom = parse_html(html)
+    get_by_role(dom, "contentinfo")
+
+    html = """
+    <html>
+        <body>
+            <article>
+            <footer>the footer</footer>
+            </article>
+        </body>
+    </html>
+    """
+    dom = parse_html(html)
+    generic = get_by_role(dom, "generic")
+    assert generic.element.tag == "footer"
+
+    html = """
+    <html>
+        <body>
+            <aside>
+            <footer>the footer</footer>
+            </aside>
+        </body>
+    </html>
+    """
+    dom = parse_html(html)
+    generic = get_by_role(dom, "generic")
+    assert generic.element.tag == "footer"
+
+    html = """
+    <html>
+        <body>
+            <main>
+            <footer>the footer</footer>
+            </main>
+        </body>
+    </html>
+    """
+    dom = parse_html(html)
+    generic = get_by_role(dom, "generic")
+    assert generic.element.tag == "footer"
+
+    html = """
+    <html>
+        <body>
+            <nav>
+            <footer>the footer</footer>
+            </nav>
+        </body>
+    </html>
+    """
+    dom = parse_html(html)
+    generic = get_by_role(dom, "generic")
+    assert generic.element.tag == "footer"
+
+    html = """
+    <html>
+        <body>
+            <section>
+            <footer>the footer</footer>
+            </section>
+        </body>
+    </html>
+    """
+    dom = parse_html(html)
+    generic = get_by_role(dom, "generic")
+    assert generic.element.tag == "footer"
+
+    html = """
+    <div role="article">
+      <h2>Heading of the segment</h2>
+      <p>Paragraph for the segment.</p>
+      <p>Another paragraph.</p>
+      Controls to interact with the article, share it, etc.
+      <footer>the footer</footer>
+    </div>
+    """
+    dom = parse_html(html)
+    generic = get_by_role(dom, "generic")
+    assert generic.element.tag == "footer"
+
+    html = """
+    <div role="complementary">
+        <h2>Our partners</h2>
+        <footer>the footer</footer>
+    </div>
+    """
+    dom = parse_html(html)
+    generic = get_by_role(dom, "generic")
+    assert generic.element.tag == "footer"
+
+    html = """
+    <div id="main" role="main">
+      <h1>Avocados</h1>
+      <footer>the footer</footer>
+    </div>
+    """
+    dom = parse_html(html)
+    generic = get_by_role(dom, "generic")
+    assert generic.element.tag == "footer"
+
+    html = """
+    <div role="navigation" aria-label="Main">>
+      <footer>the footer</footer>
+    </div>
+    """
+    dom = parse_html(html)
+    generic = get_by_role(dom, "generic")
+    assert generic.element.tag == "footer"
+
+    html = """
+    <div role="region" aria-label="Example">>
+      <footer>the footer</footer>
+    </div>
+    """
+    dom = parse_html(html)
+    generic = get_by_role(dom, "generic")
+    assert generic.element.tag == "footer"

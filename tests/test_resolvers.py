@@ -1,5 +1,5 @@
+from unittest.mock import Mock
 from selectolax.lexbor import LexborHTMLParser
-
 from unbrowsed.resolvers import (
     AccessibleNameResolver,
     AccessibleDescriptionResolver,
@@ -393,3 +393,9 @@ def test_input_without_label():
     input_element = parser.css_first("input")
 
     assert AccessibleNameResolver.resolve(input_element) is None
+
+
+def test_get_footer_role():
+    mock_node = Mock()
+    mock_node.parent = None
+    assert RoleResolver.get_footer_role(mock_node) == "contentinfo"
