@@ -188,7 +188,10 @@ class RoleResolver:
 
     @staticmethod
     def get_td_role(node: LexborNode) -> str:
-        """Determine the role of a td element."""
+        """
+        Determine the implicit role of a <td> element.
+        https://developer.mozilla.org/en-US/docs/Web/HTML/Element/td#technical_summary
+        """
         ancestor = node.parent
         while ancestor and ancestor.tag != "table":
             ancestor = ancestor.parent
@@ -208,7 +211,10 @@ class RoleResolver:
 
     @staticmethod
     def get_img_role(node: LexborNode) -> str:
-        """Determine the role of an img element."""
+        """
+        Determine the implicit role of an <img> element.
+        https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img#technical_summary
+        """
         if "alt" in node.attributes:
             alt = node.attributes.get("alt")
             if alt == "":
@@ -223,7 +229,10 @@ class RoleResolver:
 
     @staticmethod
     def get_select_role(node: LexborNode) -> str:
-        """Determine the role of a select element."""
+        """
+        Determine the implicit role of a <select> element.
+        https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select#technical_summary
+        """
         if "multiple" in node.attributes:
             return "listbox"
         if (
@@ -236,7 +245,10 @@ class RoleResolver:
 
     @staticmethod
     def get_a_role(node: LexborNode) -> str:
-        """Determine the role of an element"""
+        """
+        Determine the implicit role of an <a> element.
+        https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a#technical_summary
+        """
         if "href" in node.attributes:
             return "link"
         return "generic"
@@ -244,7 +256,7 @@ class RoleResolver:
     @staticmethod
     def get_footer_role(node: LexborNode) -> str:
         """
-        Determine the role of a footer.
+        Determine the implicit role of a <footer> element.
         https://developer.mozilla.org/en-US/docs/Web/HTML/Element/footer#technical_summary
         """
         parent = node.parent
