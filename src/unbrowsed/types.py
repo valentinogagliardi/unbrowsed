@@ -33,6 +33,7 @@ Menu = Literal["menu"]
 Meter = Literal["meter"]
 Navigation = Literal["navigation"]
 Option = Literal["option"]
+Paragraph = Literal["paragraph"]
 Presentation = Literal["presentation"]
 ProgressBar = Literal["progressbar"]
 Radio = Literal["radio"]
@@ -82,6 +83,7 @@ AriaRoles = Literal[
     Meter,
     Navigation,
     Option,
+    Paragraph,
     Presentation,
     ProgressBar,
     Radio,
@@ -146,6 +148,7 @@ class ImplicitRoleMapping(TypedDict, total=False):
     optgroup: Group
     option: Option
     output: Status
+    p: Paragraph
     progress: ProgressBar
     section: Region
     select: Callable[[], str]
