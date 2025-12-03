@@ -885,3 +885,15 @@ def test_get_by_role_footer():
     dom = parse_html(html)
     generic = get_by_role(dom, "generic")
     assert generic.element.tag == "footer"
+
+
+def test_get_by_role_paragraph():
+    html = """
+    <html>
+        <body>
+            <p>the paragraph</footer>
+        </body>
+    </html>
+    """
+    dom = parse_html(html)
+    get_by_role(dom, "paragraph").to_have_text_content("the paragraph")
