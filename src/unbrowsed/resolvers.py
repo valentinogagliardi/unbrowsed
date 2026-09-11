@@ -139,6 +139,7 @@ class RoleResolver:
                 "checkbox": "checkbox",
                 "radio": "radio",
                 "text": "textbox",
+                "email": "textbox",
                 "search": "searchbox",
                 "button": "button",
                 "password": "textbox",

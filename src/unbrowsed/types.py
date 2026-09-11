@@ -105,6 +105,7 @@ class InputType(TypedDict):
     checkbox: Checkbox
     radio: Radio
     text: TextBox
+    email: TextBox
     search: SearchBox
     button: Button
     password: TextBox

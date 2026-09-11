@@ -517,6 +517,13 @@ def test_get_by_role_accessible_name():
     get_by_role(dom, "textbox", name="The name")
     get_by_role(dom, "textbox", name="The surname")
 
+    html = """
+    <input type="email" aria-labelledby="this">
+    <button id="this">Email</button>
+    """
+    dom = parse_html(html)
+    get_by_role(dom, "textbox", name="Email")
+
 
 def test_get_by_role_aria_labelledby_multiple_refs():
     html = """
