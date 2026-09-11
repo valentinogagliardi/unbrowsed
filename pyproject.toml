@@ -28,7 +28,7 @@ classifiers = [
   "Topic :: Software Development :: Testing",
 ]
 dependencies = [
-  "selectolax>=0.3.28",
+  "selectolax>=0.4.6",
 ]
 
 optional-dependencies.docs = [
