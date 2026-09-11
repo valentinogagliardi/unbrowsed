@@ -240,6 +240,7 @@ def query_by_role(
     current: Optional[bool | str] = None,
     name: Optional[str] = None,
     description: Optional[str] = None,
+    exact=True,
 ) -> Optional[Result]:
     """
     Queries the DOM for an element with the specified ARIA role.
@@ -251,6 +252,8 @@ def query_by_role(
                  Can be a boolean or string "true".
         name: The accessible name of the element.
         description: The accessible description of the element.
+        exact: Defaults to `True`; matches full name and/or description, case-sensitive.
+               When `False`, matches name/description substrings and is not case-sensitive.
 
     Returns:
         A Result containing the matched element.
@@ -264,6 +267,8 @@ def query_by_role(
            The *name* parameter.
     .. versionadded:: 0.1.0a16
            The *description* parameter.
+    .. versionadded:: TODO
+           The *exact* parameter.
     """
 
     matches = []
@@ -274,6 +279,7 @@ def query_by_role(
             target_role=role,
             name=name,
             description=description,
+            exact=exact,
         )
         if not role_matcher.matches():
             continue
@@ -293,7 +299,7 @@ def query_by_role(
                         return Result(child)
 
             raise MultipleElementsFoundError(
-                f"Found {len(matches)} elements with role '{role}'. "
+                f"Found multiple elements with role '{role}'. "
                 f"Use query_all_by_role if multiple matches are expected."
             )
 
@@ -309,6 +315,7 @@ def get_by_role(
     current: Optional[bool | str] = None,
     name: Optional[str] = None,
     description: Optional[str] = None,
+    exact=True,
 ) -> Result:
     """
     Retrieves an element from the DOM by its ARIA role.
@@ -323,6 +330,8 @@ def get_by_role(
                  Can be a boolean or string "true".
         name: The accessible name of the element.
         description: The accessible description of the element.
+        exact: Defaults to `True`; matches full name and/or description, case-sensitive.
+               When `False`, matches name/description substrings and is not case-sensitive.
 
     Returns:
         A Result containing the matched element and context description.
@@ -338,10 +347,12 @@ def get_by_role(
            The *name* parameter.
     .. versionadded:: 0.1.0a16
            The *description* parameter.
+    .. versionadded:: TODO
+           The *exact* parameter.
     """
     try:
         result = query_by_role(
-            dom, role, current=current, name=name, description=description
+            dom, role, current=current, name=name, description=description, exact=exact
         )
         if not result:
             raise NoElementsFoundError(

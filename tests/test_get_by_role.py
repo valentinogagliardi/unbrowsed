@@ -146,7 +146,7 @@ def test_get_by_role_multiple_matches():
     with pytest.raises(MultipleElementsFoundError) as exc:
         get_by_role(dom, "button")
     assert (
-        "Found 2 elements with role 'button'. "
+        "Found multiple elements with role 'button'. "
         "Use get_all_by_role if multiple matches are expected."
         == str(exc.value)
     )
@@ -904,3 +904,237 @@ def test_get_by_role_paragraph():
     """
     dom = parse_html(html)
     get_by_role(dom, "paragraph").to_have_text_content("the paragraph")
+
+
+class TestGetByRoleNonExactNameAndOrDescription:
+    def test_accessible_name_partial_matching(self):
+        html = """
+        <button>Save Document</button>
+        <button>Delete Item</button>
+        """
+        dom = parse_html(html)
+        get_by_role(dom, "button", name="Save", exact=False)
+        get_by_role(dom, "button", name="Document", exact=False)
+        get_by_role(dom, "button", name="Delete", exact=False)
+
+    def test_accessible_name_case_insensitive_partial_matching(self):
+        html = """
+        <button aria-label="Close Dialog">×</button>
+        """
+        dom = parse_html(html)
+        get_by_role(dom, "button", name="close dialog", exact=False)
+        get_by_role(dom, "button", name="CLOSE", exact=False)
+
+    def test_accessible_description_partial_matching(self):
+        html = """
+        <input type="text" aria-describedby="help">
+        <div id="help">Enter your full name here</div>
+        """
+        dom = parse_html(html)
+        get_by_role(dom, "textbox", description="full name", exact=False)
+        get_by_role(dom, "textbox", description="Enter your", exact=False)
+        get_by_role(dom, "textbox", description="here", exact=False)
+
+    def test_accessible_description_case_insensitive_partial_matching(self):
+        html = """
+        <input type="password" aria-describedby="pwd-help">
+        <div id="pwd-help">Password must contain uppercase letters</div>
+        """
+        dom = parse_html(html)
+        get_by_role(dom, "textbox", description="PASSWORD", exact=False)
+        get_by_role(dom, "textbox", description="uppercase", exact=False)
+        get_by_role(
+            dom, "textbox", description="CONTAIN UPPERCASE", exact=False
+        )
+
+    def test_partial_matching_of_element_with_multiple_accessible_descriptions(
+        self,
+    ):
+        html = """
+        <input type="text" aria-describedby="help error">
+        <div id="help">Enter your email address</div>
+        <div id="error">This field is required</div>
+        """
+        dom = parse_html(html)
+        get_by_role(dom, "textbox", description="email", exact=False)
+        get_by_role(dom, "textbox", description="required", exact=False)
+        get_by_role(dom, "textbox", description="field is", exact=False)
+
+    def test_partial_matching_on_both_name_and_description(self):
+        html = """
+        <input type="text" aria-label="User Email" aria-describedby="help">
+        <div id="help">Please enter a valid email address</div>
+        """
+        dom = parse_html(html)
+        get_by_role(
+            dom, "textbox", name="Email", description="valid", exact=False
+        )
+        get_by_role(
+            dom, "textbox", name="USER", description="ENTER", exact=False
+        )
+
+    def test_partial_matching_does_no_match_if_name_matches_but_description_not(
+        self,
+    ):
+        html = """
+        <input type="text" aria-label="User Email" aria-describedby="help">
+        <div id="help">Please enter a valid email address</div>
+        """
+        dom = parse_html(html)
+        with pytest.raises(NoElementsFoundError):
+            get_by_role(
+                dom,
+                "textbox",
+                name="Email",
+                description="no match",
+                exact=False,
+            )
+
+    def test_partial_matching_does_no_match_if_description_matches_but_name_not(
+        self,
+    ):
+        html = """
+        <input type="text" aria-label="User Email" aria-describedby="help">
+        <div id="help">Please enter a valid email address</div>
+        """
+        dom = parse_html(html)
+        with pytest.raises(NoElementsFoundError):
+            get_by_role(
+                dom,
+                "textbox",
+                name="no match",
+                description="valid",
+                exact=False,
+            )
+
+    def test_partial_match_of_name_that_spans_multiple_nodes(self):
+        html = """
+        <button aria-labelledby="first second">Button text</button>
+        <span id="first">Save Important</span>
+        <span id="second">Document File</span>
+        """
+        dom = parse_html(html)
+        get_by_role(dom, "button", name="Important", exact=False)
+        get_by_role(dom, "button", name="Document", exact=False)
+        get_by_role(dom, "button", name="Save Important Document", exact=False)
+
+    def test_partial_matching_prioritizes_aria_labelledby_over_aria_label(
+        self,
+    ):
+        html = """
+        <button aria-label="Blue Button" aria-labelledby="color">Red</button>
+        <span id="color">Yellow Green</span>
+        """
+        dom = parse_html(html)
+        get_by_role(dom, "button", name="Yellow", exact=False)
+        get_by_role(dom, "button", name="Green", exact=False)
+        # Should not match aria-label when aria-labelledby exists
+        with pytest.raises(NoElementsFoundError):
+            get_by_role(dom, "button", name="Blue", exact=False)
+
+    def test_does_not_match_if_dont_find_any_partial_matching(self):
+        html = """
+        <button>Save Document</button>
+        <button>Save File</button>
+        <button>Delete Save</button>
+        """
+        dom = parse_html(html)
+        with pytest.raises(NoElementsFoundError):
+            get_by_role(dom, "button", name="Upload", exact=False)
+
+    def test_does_not_match_if_multiple_matches_found(self):
+        html = """
+        <button>Save Document</button>
+        <button>Save File</button>
+        <button>Delete Save</button>
+        """
+        dom = parse_html(html)
+        with pytest.raises(MultipleElementsFoundError) as exc:
+            get_by_role(dom, "button", name="Save", exact=False)
+        assert (
+            "Found multiple elements with role 'button'. "
+            "Use get_all_by_role if multiple matches are expected."
+            == str(exc.value)
+        )
+
+    def test_does_not_match_if_multiple_matches_found_in_children(self):
+        html = """
+        <div>
+            <button>Save Document</button>
+            <button>Save File</button>
+        </div>
+        <div>
+            <button>Cancel Save</button>
+        </div>
+        """
+        dom = parse_html(html)
+        with pytest.raises(MultipleElementsFoundError) as exc:
+            get_by_role(dom, "button", name="Save", exact=False)
+        assert (
+            "Found multiple elements with role 'button'. "
+            "Use get_all_by_role if multiple matches are expected."
+            == str(exc.value)
+        )
+
+    def test_current_attribute_with_partial_name(self):
+        html = """
+        <nav>
+          <a href="/home" aria-current="true">Home Page</a>
+          <a href="/about">About Page</a>
+        </nav>
+        """
+        dom = parse_html(html)
+        get_by_role(dom, "link", current=True, name="Home", exact=False)
+        with pytest.raises(NoElementsFoundError):
+            get_by_role(dom, "link", current=True, name="About", exact=False)
+
+    @pytest.mark.parametrize(
+        "extra_kwargs",
+        [{}, {"exact": True}],
+        ids=["default exact=true", "explicit exact=true"],
+    )
+    def test_does_not_match_partial_text_with_non_exact_query(
+        self, extra_kwargs
+    ):
+        html = """
+        <button>Save Document</button>
+        <input type="text" aria-describedby="help">
+        <div id="help">Enter your name</div>
+        """
+        dom = parse_html(html)
+        with pytest.raises(NoElementsFoundError):
+            get_by_role(dom, "button", name="save", **extra_kwargs)
+        with pytest.raises(NoElementsFoundError):
+            get_by_role(
+                dom, "textbox", description="your name", **extra_kwargs
+            )
+
+        # But should match with exact text
+        get_by_role(dom, "button", name="Save Document", **extra_kwargs)
+        get_by_role(
+            dom, "textbox", description="Enter your name", **extra_kwargs
+        )
+
+    def test_non_exact_query_when_elements_has_empty_name_or_description(self):
+        html = """
+        <button aria-label="">Empty Label</button>
+        <input type="text" aria-describedby="empty">
+        <div id="empty"></div>
+        """
+        dom = parse_html(html)
+        with pytest.raises(NoElementsFoundError):
+            get_by_role(dom, "button", name="anything", exact=False)
+        with pytest.raises(NoElementsFoundError):
+            get_by_role(dom, "textbox", description="anything", exact=False)
+
+    def test_non_exact_search_supports_special_characters(self):
+        html = """
+        <button aria-label="Save & Exit (Ctrl+S)">Save</button>
+        <input type="text" aria-describedby="help">
+        <div id="help">Use format: name@domain.com</div>
+        """
+        dom = parse_html(html)
+        get_by_role(dom, "button", name="Save & Exit", exact=False)
+        get_by_role(dom, "button", name="Ctrl+S", exact=False)
+        get_by_role(dom, "textbox", description="@domain", exact=False)
+        get_by_role(dom, "textbox", description="format:", exact=False)

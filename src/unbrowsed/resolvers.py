@@ -2,6 +2,7 @@
 
 from typing import Optional
 from selectolax.lexbor import LexborNode
+from unbrowsed.matchers import TextMatch
 from unbrowsed.types import ImplicitRoleMapping
 
 
@@ -108,11 +109,14 @@ class RoleResolver:
         target_role: str,
         name: Optional[str] = None,
         description: Optional[str] = None,
+        exact=True,
     ):
         self.element = element
         self.target_role = target_role.lower()
-        self.name = name
-        self.description = description
+        self.name = TextMatch(name, exact=exact) if name else None
+        self.description = (
+            TextMatch(description, exact=exact) if description else None
+        )
 
     def get_implicit_role_mapping(self) -> ImplicitRoleMapping:
         return {
@@ -171,14 +175,16 @@ class RoleResolver:
 
         if self.name is not None:
             node_name = AccessibleNameResolver(self.element).resolve()
-            if node_name != self.name:
+            if node_name is None or not self.name.matches(node_name):
                 return False
 
         if self.description is not None:
             node_description = AccessibleDescriptionResolver(
                 self.element
             ).resolve()
-            if node_description != self.description:
+            if node_description is None or not self.description.matches(
+                node_description
+            ):
                 return False
 
         return True
